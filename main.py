@@ -1193,7 +1193,7 @@ class ReviewGenerator:
                     review += f"- Disagreement rate: **{stats.get('disagreement_rate', 0)}%**\n"
                 review += "\n"
 
-            # 共识 - 增强版
+            # 共识 - 增强版（显著增加分析深度）
             if verification['consensus']:
                 review += "### " + ("共识观点分析" if self.language == "zh" else "Consensus Analysis") + "\n\n"
                 for i, consensus in enumerate(verification['consensus'], 1):
@@ -1201,22 +1201,80 @@ class ReviewGenerator:
                     support_rate = consensus.get('support_rate', consensus.get('source_count', 0) * 10)
                     avg_sim = consensus.get('avg_similarity', 0)
                     confidence = consensus.get('confidence', '中')
+                    source_count = len(set(consensus['sources']))
+
+                    # 详细分析字段
+                    strength_level = "强" if support_rate > 60 else "中" if support_rate > 30 else "弱"
+                    coherence_quality = "高" if avg_sim > 0.8 else "中" if avg_sim > 0.6 else "低"
 
                     review += f"#### {i}. {consensus['content']}\n\n"
-                    review += f"- **支持来源** ({len(set(consensus['sources']))} 篇): {sources_str}\n"
-                    review += f"- **支持率**: {support_rate}%\n"
-                    review += f"- **相似度**: {avg_sim}\n"
-                    review += f"- **共识强度**: {confidence}\n\n"
 
-            # 分歧 - 增强版
+                    # 核心统计指标
+                    review += f"**核心统计指标**:\n"
+                    review += f"- **支持来源** ({source_count} 篇): {sources_str}\n"
+                    review += f"- **支持率**: {support_rate}% (共识强度: {strength_level})\n"
+                    review += f"- **相似度**: {avg_sim} (一致性质量: {coherence_quality})\n"
+                    review += f"- **共识置信度**: {confidence}\n"
+
+                    # 深度分析
+                    review += f"\n**深度分析**:\n"
+
+                    # 支持广度分析
+                    if source_count >= 3:
+                        breadth_analysis = "高度共识 - 多个独立来源支持"
+                        if source_count >= 5:
+                            breadth_analysis = "广泛共识 - 多数来源一致支持"
+                    else:
+                        breadth_analysis = "有限共识 - 仅少数来源支持"
+                    review += f"- **支持广度**: {breadth_analysis}\n"
+
+                    # 一致性分析
+                    if avg_sim > 0.85:
+                        consistency = "高度一致 - 来源间表述高度吻合"
+                    elif avg_sim > 0.7:
+                        consistency = "基本一致 - 来源间主要观点吻合"
+                    else:
+                        consistency = "部分一致 - 存在表述差异但核心观点相同"
+                    review += f"- **一致性评估**: {consistency}\n"
+
+                    # 稳定性分析
+                    if support_rate > 70:
+                        stability = "高度稳定 - 该共识在文献中具有很强稳定性"
+                    elif support_rate > 40:
+                        stability = "相对稳定 - 该共识在部分文献中得到确认"
+                    else:
+                        stability = "稳定性较低 - 该共识仅在特定文献中出现"
+                    review += f"- **稳定性评估**: {stability}\n"
+
+                    # 证据强度分析
+                    if source_count >= 4 and avg_sim > 0.75:
+                        evidence_strength = "强证据 - 多个高相似度来源支持"
+                    elif source_count >= 2:
+                        evidence_strength = "中等证据 - 多个来源但一致性一般"
+                    elif avg_sim > 0.8:
+                        evidence_strength = "中等证据 - 单一高相似度来源"
+                    else:
+                        evidence_strength = "弱证据 - 来源少且一致性较低"
+                    review += f"- **证据强度**: {evidence_strength}\n"
+
+                    # 学术意义分析
+                    if strength_level == "强" and coherence_quality == "高":
+                        academic_significance = "核心共识 - 可作为该领域的基础认知"
+                    elif strength_level == "中":
+                        academic_significance = "重要共识 - 代表该领域的主要观点"
+                    else:
+                        academic_significance = "潜在共识 - 需要更多证据支持"
+                    review += f"- **学术意义**: {academic_significance}\n\n"
+
+            # 分歧 - 增强版（显著增加分析深度）
             if verification['disagreements']:
                 review += "### " + ("观点分歧分析" if self.language == "zh" else "Conflicting Views Analysis") + "\n\n"
                 for i, disagreement in enumerate(verification['disagreements'], 1):
                     review += f"#### 分歧 {i}\n\n"
 
-                    # 分歧类型
+                    # 分歧类型分类
                     disagreement_type = disagreement.get('type', '未知类型')
-                    review += f"**类型**: {disagreement_type}\n\n"
+                    review += f"**分歧类型**: {disagreement_type}\n\n"
 
                     # 观点对比
                     review += f"**观点 A** ({disagreement.get('source1', 'Unknown')}):\n"
@@ -1225,23 +1283,75 @@ class ReviewGenerator:
                     review += f"**观点 B** ({disagreement.get('source2', 'Unknown')}):\n"
                     review += f"> {disagreement.get('view2', 'N/A')}\n\n"
 
-                    # 额外信息
+                    # 深度分析
+                    review += f"**分歧分析**:\n"
+
+                    # 置信度分析
                     if 'confidence' in disagreement:
                         conf_label = disagreement['confidence']
                         conf_value = int(conf_label) if isinstance(conf_label, (int, float)) else (
                             0.9 if '高' in str(conf_label) or 'high' in str(conf_label).lower() else
                             0.6 if '中' in str(conf_label) or 'medium' in str(conf_label).lower() else 0.3
                         )
-                        review += f"- **置信度**: {conf_label} ({int(conf_value * 100)}%)\n"
+                        conf_percent = int(conf_value * 100)
 
+                        if conf_percent >= 85:
+                            conf_analysis = "高度可靠 - 证据清晰明确"
+                        elif conf_percent >= 60:
+                            conf_analysis = "中等可靠 - 需要进一步验证"
+                        else:
+                            conf_analysis = "可靠性较低 - 可能存在理解偏差"
+                        review += f"- **置信度**: {conf_label} ({conf_percent}%) - {conf_analysis}\n"
+
+                    # 分歧性质分析
+                    if '直接对立' in disagreement_type or 'Direct Opposition' in disagreement_type:
+                        nature_analysis = "根本性分歧 - 双方观点完全相反，可能存在理论或方法论差异"
+                    elif '数据与观点' in disagreement_type or 'Data vs Opinion' in disagreement_type:
+                        nature_analysis = "证据层级分歧 - 一方基于定量数据，另一方基于定性观点"
+                    elif '结果不一致' in disagreement_type or 'Result Inconsistency' in disagreement_type:
+                        nature_analysis = "实证分歧 - 双方均有实证研究但结论不同，可能受样本或方法影响"
+                    elif '适用范围' in disagreement_type or 'Scope' in disagreement_type:
+                        nature_analysis = "条件性分歧 - 双方观点在不同适用条件下均成立"
+                    elif '主题分歧' in disagreement_type or 'Thematic' in disagreement_type:
+                        nature_analysis = "主题相关分歧 - 相同主题下的不同理解或解释"
+                    else:
+                        nature_analysis = "一般性分歧 - 双方观点存在明显差异"
+                    review += f"- **分歧性质**: {nature_analysis}\n"
+
+                    # 时间背景分析
                     if 'temporal_context' in disagreement:
-                        review += f"- **时间背景**: {disagreement['temporal_context']}\n"
+                        review += f"- **时间背景**: {disagreement['temporal_context']} - 可能反映不同时期的研究范式或技术水平变化\n"
 
+                    # 相关主题分析
                     if 'theme' in disagreement:
-                        review += f"- **相关主题**: {disagreement['theme']}\n"
+                        review += f"- **相关主题**: {disagreement['theme']} - 分歧围绕该主题展开\n"
 
+                    # 相似度分析（如果存在）
                     if 'similarity' in disagreement:
-                        review += f"- **内容相似度**: {disagreement['similarity']}\n"
+                        sim_value = disagreement['similarity']
+                        if sim_value > 0.4:
+                            sim_analysis = "高相似度 - 双方表述相似但核心观点不同，可能存在理解差异"
+                        elif sim_value > 0.2:
+                            sim_analysis = "中等相似度 - 存在一定共同点但主要观点不同"
+                        else:
+                            sim_analysis = "低相似度 - 双方观点本质不同"
+                        review += f"- **内容相似度**: {sim_value} - {sim_analysis}\n"
+
+                    # 方法论差异（如果有）
+                    if 'type' in disagreement and '方法' in disagreement['type']:
+                        review += f"- **方法论暗示**: 该分歧可能源于研究方法的不同，建议比较双方的研究设计和数据分析方法\n"
+
+                    # 影响评估
+                    if conf_percent >= 80:
+                        impact = "高影响 - 该分歧对领域理解有重要意义，需要更多研究解决"
+                    elif conf_percent >= 50:
+                        impact = "中等影响 - 该分歧值得关注但可能不影响核心结论"
+                    else:
+                        impact = "低影响 - 该分歧可能是偶然或受特定条件限制"
+                    review += f"- **学术影响**: {impact}\n"
+
+                    # 建议后续研究
+                    review += f"- **研究建议**: 建议通过对照实验、元分析或扩大样本量来验证该分歧，确定更准确的结论\n"
 
                     review += "\n"
 
