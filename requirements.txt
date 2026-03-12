@@ -1,0 +1,10 @@
+# Core dependencies for literature review skill
+fastmcp>=0.10.0
+httpx>=0.27.0
+
+# PDF parsing (pdfplumber for better CJK support, pypdf as fallback)
+pdfplumber>=0.7.0
+pypdf>=4.0.0
+
+# Optional dependencies for enhanced features
+# marker-pdf>=0.2.5  # Alternative PDF parser (uncomment to use)

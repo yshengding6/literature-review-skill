@@ -1,0 +1,109 @@
+# Literature Review Skill Configuration
+# Copy this file to config.yaml and modify according to your needs
+
+# ===============================
+# API Configuration
+# ===============================
+web_search:
+  # Enable or disable web search
+  enabled: true
+
+  # API provider: mock (default), google, bing
+  provider: "mock"
+
+  # API key for search services (optional)
+  # Leave empty to use mock search results
+  api_key: ""
+
+  # Search timeout in seconds
+  timeout: 30
+
+# ===============================
+# Output Settings
+# ===============================
+output:
+  # Output language: "zh" for Chinese, "en" for English
+  language: "zh"
+
+  # Generate BibTeX file along with review
+  generate_bibtex: true
+
+  # Output directory for generated files (default: current directory)
+  # Use "." for current directory, or specify a path
+  output_dir: "."
+
+  # Output file format for review: "md", "txt"
+  review_format: "md"
+
+# ===============================
+# Analysis Settings
+# ===============================
+analysis:
+  # Similarity threshold for cross-verification (0.0 - 1.0)
+  # Higher values mean more strict similarity matching
+  similarity_threshold: 0.7
+
+  # Maximum number of key points to extract per document
+  max_key_points: 15
+
+  # Enable research gap detection
+  extract_research_gaps: true
+
+  # Maximum number of research gaps to report
+  max_research_gaps: 5
+
+  # Enable cross-verification analysis
+  enable_cross_verification: true
+
+# ===============================
+# PDF Parsing Settings
+# ===============================
+pdf:
+  # PDF parser: "pypdf" (default) or "marker"
+  parser: "pypdf"
+
+  # Extract text from PDF with layout preservation
+  preserve_layout: false
+
+# ===============================
+# Citation Settings
+# ===============================
+citation:
+  # Citation format: "author_year", "author_year_page", "numeric"
+  format: "author_year"
+
+  # Use strict citation enforcement (prevents hallucinations)
+  strict_enforcement: true
+
+  # Unknown author name to use when author cannot be detected
+  unknown_author: "Unknown"
+
+# ===============================
+# Language Settings
+# ===============================
+language:
+  # Primary language for analysis: "auto", "zh", "en"
+  primary: "auto"
+
+  # Fallback language if auto-detection fails
+  fallback: "zh"
+
+# ===============================
+# Feishu/Lark Integration
+# ===============================
+feishu:
+  # Enable or disable Feishu integration
+  enabled: false
+
+  # Feishu app credentials
+  # Get from: https://open.feishu.cn/app
+  app_id: ""  # Set via environment variable FEISHU_APP_ID
+  app_secret: ""  # Set via environment variable FEISHU_APP_SECRET
+
+  # API settings
+  timeout: 30
+  max_retries: 3
+
+  # Pagination
+  default_page_size: 100
+  max_records_per_fetch: 1000
