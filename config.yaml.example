@@ -87,3 +87,23 @@ language:
 
   # Fallback language if auto-detection fails
   fallback: "zh"
+
+# ===============================
+# Feishu/Lark Integration
+# ===============================
+feishu:
+  # Enable or disable Feishu integration
+  enabled: false
+
+  # Feishu app credentials
+  # Get from: https://open.feishu.cn/app
+  app_id: ""  # Set via environment variable FEISHU_APP_ID
+  app_secret: ""  # Set via environment variable FEISHU_APP_SECRET
+
+  # API settings
+  timeout: 30
+  max_retries: 3
+
+  # Pagination
+  default_page_size: 100
+  max_records_per_fetch: 1000

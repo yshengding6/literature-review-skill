@@ -21,13 +21,22 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 
-# 尝试导入 PDF 解析库
+# 尝试导入 PDF 解析库 (pdfplumber 优先，支持中文)
+PDF_LIB = None
+PDF_AVAILABLE = False
+
 try:
-    from pypdf import PdfReader
+    import pdfplumber
+    PDF_LIB = "pdfplumber"
     PDF_AVAILABLE = True
 except ImportError:
-    PDF_AVAILABLE = False
-    PdfReader = None
+    try:
+        from pypdf import PdfReader
+        PDF_LIB = "pypdf"
+        PDF_AVAILABLE = True
+    except ImportError:
+        PDF_AVAILABLE = False
+        PdfReader = None
 
 # 尝试导入 MCP 相关依赖（可选）
 try:
@@ -38,11 +47,38 @@ except ImportError:
     MCP_AVAILABLE = False
     httpx = None
 
+# Feishu integration (optional)
+FEISHU_AVAILABLE = False
+try:
+    from feishu_fetcher import FeishuDataFetcher, FeishuAPIError
+    FEISHU_AVAILABLE = True
+except ImportError:
+    FeishuDataFetcher = None
+    FeishuAPIError = None
+
 # 如果 MCP 可用，初始化 MCP 服务器
 if MCP_AVAILABLE:
     mcp = FastMCP("literature-review")
 else:
     mcp = None
+
+# Load configuration
+try:
+    import os
+    config = {}
+    config_path = Path(__file__).parent / "config.yaml"
+    if config_path.exists():
+        import yaml
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f) or {}
+
+    FEISHU_ENABLED = config.get('feishu', {}).get('enabled', False)
+    FEISHU_APP_ID = os.getenv('FEISHU_APP_ID', config.get('feishu', {}).get('app_id', ''))
+    FEISHU_APP_SECRET = os.getenv('FEISHU_APP_SECRET', config.get('feishu', {}).get('app_secret', ''))
+except ImportError:
+    FEISHU_ENABLED = False
+    FEISHU_APP_ID = ''
+    FEISHU_APP_SECRET = ''
 
 
 @dataclass
@@ -115,15 +151,49 @@ class DocumentAnalyzer:
         return content
 
     def _extract_pdf_text(self, file_path: Path) -> str:
-        """从 PDF 提取文本"""
+        """从 PDF 提取文本 (支持中文)"""
+        try:
+            if PDF_LIB == "pdfplumber":
+                return self._extract_pdf_with_pdfplumber(file_path)
+            elif PDF_LIB == "pypdf":
+                return self._extract_pdf_with_pypdf(file_path)
+            else:
+                raise RuntimeError("未安装 PDF 解析库")
+        except Exception as e:
+            raise RuntimeError(f"PDF 解析失败: {e}")
+
+    def _extract_pdf_with_pdfplumber(self, file_path: Path) -> str:
+        """使用 pdfplumber 提取 PDF 文本 (更好的中文支持)"""
+        text = ""
+        try:
+            with pdfplumber.open(str(file_path)) as pdf:
+                for i, page in enumerate(pdf.pages):
+                    try:
+                        page_text = page.extract_text()
+                        if page_text:
+                            # 确保正确的 UTF-8 编码
+                            if isinstance(page_text, bytes):
+                                page_text = page_text.decode('utf-8', errors='replace')
+                            text += page_text + "\n\n"
+                    except Exception as e:
+                        print(f"Warning: 无法提取第 {i+1} 页: {e}")
+                        continue
+            return text.strip()
+        except Exception as e:
+            raise RuntimeError(f"pdfplumber 解析失败: {e}")
+
+    def _extract_pdf_with_pypdf(self, file_path: Path) -> str:
+        """使用 pypdf 提取 PDF 文本 (备用方案)"""
         try:
             reader = PdfReader(str(file_path))
             text = ""
             for page in reader.pages:
-                text += page.extract_text() + "\n"
-            return text
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+            return text.strip()
         except Exception as e:
-            raise RuntimeError(f"PDF 解析失败: {e}")
+            raise RuntimeError(f"pypdf 解析失败: {e}")
 
     def extract_citations(self, text: str, source_name: str) -> Citation:
         """从文本中提取引用信息"""
@@ -849,6 +919,112 @@ if MCP_AVAILABLE and mcp:
             'total_documents': verification['total_documents'],
             'consensus_rate': f"{verification['consensus_rate']:.1f}%"
         }
+
+
+# Feishu/Lark Integration MCP Tools (only register if enabled and available)
+if MCP_AVAILABLE and mcp and FEISHU_AVAILABLE and FEISHU_ENABLED:
+    @mcp.tool()
+    def fetch_feishu_data(
+        url: str,
+        table_name: Optional[str] = None,
+        max_records: int = 1000
+    ) -> Dict[str, Any]:
+        """
+        Fetch data from Feishu base/spreadsheet
+
+        Args:
+            url: Feishu baseinfo URL (e.g., https://open.feishu.cn/app/.../baseinfo)
+            table_name: Optional table name filter (if None, fetch all tables)
+            max_records: Maximum number of records to fetch (default: 1000)
+
+        Returns:
+            Dictionary containing base info, tables with records, and summary
+        """
+        try:
+            fetcher = FeishuDataFetcher(FEISHU_APP_ID, FEISHU_APP_SECRET)
+            parsed = fetcher.parse_url(url)
+
+            if not parsed.get('base_id') and not parsed.get('spreadsheet_token'):
+                return {"error": "Invalid Feishu URL. Must be a base or spreadsheet URL"}
+
+            tables_data = []
+
+            if parsed.get('base_id'):
+                all_tables = fetcher.fetch_base_tables(parsed['base_id'])
+
+                for table in all_tables:
+                    if table_name and table.get('name') != table_name:
+                        continue
+
+                    records = fetcher.fetch_records_paginated(
+                        parsed['base_id'],
+                        table['table_id'],
+                        max_records=max_records
+                    )
+
+                    tables_data.append({
+                        'table_id': table['table_id'],
+                        'name': table['name'],
+                        'record_count': len(records),
+                        'records': records[:20]  # Limit response size
+                    })
+
+                    if table_name:
+                        break
+
+            fetcher.close()
+
+            return {
+                'base_id': parsed.get('base_id'),
+                'base_name': tables_data[0]['name'] if tables_data else 'Unknown',
+                'tables': tables_data,
+                'total_tables': len(tables_data),
+                'total_records': sum(t['record_count'] for t in tables_data)
+            }
+
+        except FeishuAPIError as e:
+            return {"error": f"Feishu API error: {e.msg} (code: {e.code})"}
+        except Exception as e:
+            return {"error": f"Failed to fetch Feishu data: {str(e)}"}
+
+    @mcp.tool()
+    def list_feishu_tables(url: str) -> Dict[str, Any]:
+        """
+        List all tables in a Feishu base
+
+        Args:
+            url: Feishu baseinfo URL
+
+        Returns:
+            Dictionary containing base_id, base_name, and list of tables
+        """
+        try:
+            fetcher = FeishuDataFetcher(FEISHU_APP_ID, FEISHU_APP_SECRET)
+            parsed = fetcher.parse_url(url)
+
+            if not parsed.get('base_id'):
+                return {"error": "Invalid Feishu base URL"}
+
+            tables = fetcher.fetch_base_tables(parsed['base_id'])
+            fetcher.close()
+
+            return {
+                'base_id': parsed['base_id'],
+                'tables': [
+                    {
+                        'table_id': t['table_id'],
+                        'name': t['name'],
+                        'field_count': len(t.get('fields', []))
+                    }
+                    for t in tables
+                ],
+                'total_tables': len(tables)
+            }
+
+        except FeishuAPIError as e:
+            return {"error": f"Feishu API error: {e.msg} (code: {e.code})"}
+        except Exception as e:
+            return {"error": f"Failed to list tables: {str(e)}"}
 
 
 # 命令行入口

@@ -1,8 +1,8 @@
 ---
 name: literature-review
-version: 2.0.0
-description: 学术级文献调研综述工具。支持 PDF 解析、交叉验证、研究空白检测、引用溯源和 BibTeX 导出。
-tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex]
+version: 2.1.0
+description: 学术级文献调研综述工具。支持 PDF 解析、交叉验证、研究空白检测、引用溯源、BibTeX 导出和飞书数据集成。
+tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex, feishu]
 author: Claude
 ---
 
@@ -10,7 +10,12 @@ author: Claude
 
 A professional-grade tool for academic research that supports document analysis, cross-verification, and comprehensive literature review generation.
 
-## New Features (v2.0)
+## New Features (v2.1)
+
+### Feishu Integration
+- [x] **Feishu Data Fetching** - Fetch data from Feishu bases/spreadsheets for literature review
+
+### New Features (v2.0)
 
 ### Logic Enhancement
 - [x] **Cross-Verification** - Identify consensus and disagreements across multiple papers
@@ -40,6 +45,12 @@ Use this skill when you need to:
 - Work in Chinese or English
 
 ## Capabilities
+
+### Feishu Integration
+- **Data Fetching**: Fetch records from Feishu bases and tables
+- **URL Parsing**: Support for Feishu baseinfo and spreadsheet URLs
+- **Pagination**: Automatic pagination for large datasets
+- **Configurable**: Environment variable or config file authentication
 
 ### Document Analysis
 - **Formats Supported**: TXT, PDF (with pypdf), MD, code files
