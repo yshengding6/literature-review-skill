@@ -359,14 +359,14 @@ class DocumentAnalyzer:
 
 
 class CrossVerifier:
-    """交叉验证器 - 识别共识与分歧"""
+    """交叉验证器 - 识别共识与分歧（增强版）"""
 
     def __init__(self, similarity_threshold: float = 0.7):
         self.similarity_threshold = similarity_threshold
 
     def compute_similarity(self, text1: str, text2: str) -> float:
-        """计算两个文本的相似度"""
-        # 简单的词重叠相似度
+        """计算两个文本的相似度（增强版）"""
+        # 词重叠相似度
         words1 = set(re.findall(r'\w+', text1.lower()))
         words2 = set(re.findall(r'\w+', text2.lower()))
 
@@ -375,13 +375,114 @@ class CrossVerifier:
 
         intersection = len(words1 & words2)
         union = len(words1 | words2)
-        return intersection / union if union > 0 else 0.0
+        jaccard = intersection / union if union > 0 else 0.0
+
+        # 长度相似度惩罚（避免过长文本匹配度过高）
+        len_ratio = min(len(text1), len(text2)) / max(len(text1), len(text2))
+        length_penalty = 1.0 if len_ratio > 0.5 else len_ratio * 2
+
+        # 关键词重叠加权
+        key_words = ['重要', '关键', '核心', '主要', '结论', '发现', '研究', '表明',
+                    'important', 'key', 'major', 'conclusion', 'finding', 'significant']
+        key_overlap = sum(1 for word in key_words if word in text1.lower() and word in text2.lower())
+
+        final_similarity = jaccard * length_penalty + (key_overlap * 0.05)
+        return min(final_similarity, 1.0)
+
+    def _detect_methodological_differences(self, point1: Dict, point2: Dict) -> Optional[str]:
+        """检测方法论差异"""
+        methodology_keywords = {
+            'quantitative': ['定量', '统计', '实验', '测量', 'quantitative', 'statistical', 'experimental'],
+            'qualitative': ['定性', '访谈', '案例', '观察', 'qualitative', 'interview', 'case study'],
+            'theoretical': ['理论', '模型', '假设', '推导', 'theoretical', 'model', 'hypothesis'],
+            'empirical': ['实证', '调研', '数据', '观察', 'empirical', 'survey', 'data-driven']
+        }
+
+        method1 = None
+        method2 = None
+
+        for method_type, keywords in methodology_keywords.items():
+            if any(kw in point1['content'].lower() for kw in keywords):
+                method1 = method_type
+            if any(kw in point2['content'].lower() for kw in keywords):
+                method2 = method_type
+
+        if method1 and method2 and method1 != method2:
+            return f"方法论差异: {method1} vs {method2}"
+        return None
+
+    def _detect_temporal_conflict(self, year1: str, year2: str) -> Optional[str]:
+        """检测时间冲突"""
+        try:
+            y1 = int(year1[:4]) if year1 else 0
+            y2 = int(year2[:4]) if year2 else 0
+
+            if y1 > 0 and y2 > 0 and abs(y1 - y2) > 5:
+                return f"时间跨度差异: {y1} vs {y2}年"
+        except (ValueError, IndexError):
+            pass
+        return None
+
+    def _classify_disagreement_type(self, view1: str, view2: str, source1: str, source2: str) -> Dict[str, Any]:
+        """分类分歧类型并提供详细信息"""
+        disagreement = {
+            'type': 'unknown',
+            'view1': view1,
+            'view2': view2,
+            'source1': source1,
+            'source2': source2,
+            'evidence': {},
+            'confidence': 0.5
+        }
+
+        # 直接对立观点
+        direct_oppositions = [
+            ('支持', '反对'), ('有效', '无效'), ('提高', '降低'), ('积极', '消极'),
+            ('增加', '减少'), ('肯定', '否定'), ('成功', '失败'),
+            ('support', 'oppose'), ('effective', 'ineffective'), ('increase', 'decrease'),
+            ('positive', 'negative'), ('improve', 'worsen'), ('agree', 'disagree')
+        ]
+
+        v1_lower = view1.lower()
+        v2_lower = view2.lower()
+
+        for pos, neg in direct_oppositions:
+            if pos in v1_lower and neg in v2_lower:
+                disagreement['type'] = '直接对立'
+                disagreement['confidence'] = 0.9
+                disagreement['evidence']['opposition_pair'] = (pos, neg)
+                return disagreement
+            elif neg in v1_lower and pos in v2_lower:
+                disagreement['type'] = '直接对立'
+                disagreement['confidence'] = 0.9
+                disagreement['evidence']['opposition_pair'] = (neg, pos)
+                return disagreement
+
+        # 定量与定性分歧
+        if (any(kw in v1_lower for kw in ['统计', '显著', '数据', 'p值', 'statistical', 'significant', 'data', 'p-value']) and
+            any(kw in v2_lower for kw in ['认为', '观点', '看法', 'believe', 'opinion', 'viewpoint'])):
+            disagreement['type'] = '数据与观点分歧'
+            disagreement['confidence'] = 0.7
+
+        # 结果不一致
+        if (any(kw in v1_lower for kw in ['发现', '表明', '结果', 'found', 'show', 'result']) and
+            any(kw in v2_lower for kw in ['发现', '表明', '结果', 'found', 'show', 'result'])):
+            disagreement['type'] = '研究结果不一致'
+            disagreement['confidence'] = 0.75
+
+        # 范围/条件限制分歧
+        if (any(kw in v1_lower for kw in ['某些', '部分', '特定', 'some', 'certain', 'specific']) and
+            any(kw in v2_lower for kw in ['所有', '普遍', '一般', 'all', 'general', 'universal'])):
+            disagreement['type'] = '适用范围分歧'
+            disagreement['confidence'] = 0.65
+
+        return disagreement
 
     def analyze_consensus(
         self,
         results: List[AnalysisResult]
     ) -> Dict[str, Any]:
-        """分析多篇文献的共识与分歧"""
+        """分析多篇文献的共识与分歧（增强版）"""
         # 收集所有关键点
         all_points = []
         for result in results:
@@ -389,86 +490,247 @@ class CrossVerifier:
                 all_points.append({
                     'content': point['content'],
                     'source': result.citation.citation_key,
-                    'score': point.get('score', 0)
+                    'score': point.get('score', 0),
+                    'year': result.citation.year,
+                    'document': result.source
                 })
 
         # 按分数排序
         all_points.sort(key=lambda x: x['score'], reverse=True)
 
-        # 识别共识（相似度高）
+        total_sources = len(results)
+        total_points = len(all_points)
+
+        # 识别共识（相似度高）- 增强版
         consensus = []
         processed_indices = set()
+        consensus_clusters = []  # 用于聚类分析
 
-        for i, point1 in enumerate(all_points[:30]):
+        for i, point1 in enumerate(all_points[:50]):
             if i in processed_indices:
                 continue
 
             agreement_points = [point1]
-            for j, point2 in enumerate(all_points[i+1:50], i+1):
+            similarities = []
+
+            for j, point2 in enumerate(all_points[i+1:60], i+1):
                 if j in processed_indices:
                     continue
 
                 similarity = self.compute_similarity(point1['content'], point2['content'])
                 if similarity >= self.similarity_threshold:
                     agreement_points.append(point2)
+                    similarities.append({
+                        'index': j,
+                        'similarity': round(similarity, 2),
+                        'content': point2['content']
+                    })
                     processed_indices.add(j)
 
             if len(agreement_points) >= 2:
                 processed_indices.add(i)
+
+                # 计算共识强度
+                consensus_strength = len(agreement_points) / total_sources
+                avg_similarity = sum(s['similarity'] for s in similarities) / len(similarities) if similarities else 0
+
                 consensus.append({
                     'content': point1['content'],
                     'sources': [p['source'] for p in agreement_points],
-                    'count': len(agreement_points)
+                    'source_count': len(agreement_points),
+                    'support_rate': round(consensus_strength * 100, 1),
+                    'avg_similarity': round(avg_similarity, 2),
+                    'confidence': '高' if consensus_strength > 0.6 else '中' if consensus_strength > 0.3 else '低'
                 })
 
-        # 识别分歧（观点冲突）
+                # 保存聚类信息
+                consensus_clusters.append({
+                    'cluster_id': len(consensus),
+                    'size': len(agreement_points),
+                    'representative': point1['content'],
+                    'points': agreement_points
+                })
+
+        # 识别分歧（观点冲突）- 增强版
         disagreements = []
-        # 检测对立观点
+        checked_pairs = set()
+
+        # 1. 直接对立观点检测
         opposition_pairs = [
             ('支持', '反对', 'support', 'oppose', 'agree', 'disagree'),
             ('有效', '无效', 'effective', 'ineffective'),
             ('提高', '降低', 'increase', 'decrease', 'improve', 'worsen'),
-            ('积极', '消极', 'positive', 'negative')
+            ('积极', '消极', 'positive', 'negative'),
+            ('肯定', '否定', 'confirm', 'deny'),
+            ('有利', '有害', 'beneficial', 'harmful')
         ]
 
-        for point1 in all_points[:20]:
-            if any(opp in point1['content'].lower() for opp in sum(opposition_pairs, ())):
-                # 查找对立观点
-                for point2 in all_points:
-                    content1 = point1['content'].lower()
-                    content2 = point2['content'].lower()
+        for point1 in all_points[:30]:
+            for point2 in all_points[:30]:
+                pair_id = tuple(sorted([all_points.index(point1), all_points.index(point2)]))
+                if pair_id in checked_pairs:
+                    continue
+                checked_pairs.add(pair_id)
 
-                    for pair in opposition_pairs:
-                        if (pair[0] in content1 and pair[1] in content2) or \
-                           (pair[2] in content1 and pair[3] in content2):
-                            disagreements.append({
-                                'view1': point1['content'],
-                                'view2': point2['content'],
-                                'source1': point1['source'],
-                                'source2': point2['source']
+                content1 = point1['content'].lower()
+                content2 = point2['content'].lower()
+
+                # 检测直接对立
+                for pair in opposition_pairs:
+                    if (pair[0] in content1 and pair[1] in content2) or \
+                       (pair[2] in content1 and pair[3] in content2) or \
+                       (pair[4] in content1 and pair[5] in content2) or \
+                       (pair[0] in content2 and pair[1] in content1):
+
+                    # 分类分歧类型
+                    classified = self._classify_disagreement_type(
+                        point1['content'], point2['content'],
+                        point1['source'], point2['source']
+                    )
+
+                    # 检测方法论差异
+                    method_diff = self._detect_methodological_differences(point1, point2)
+                    if method_diff:
+                        classified['type'] += f" ({method_diff})"
+
+                    # 检测时间冲突
+                    temp_conflict = self._detect_temporal_conflict(point1['year'], point2['year'])
+                    if temp_conflict:
+                        classified['temporal_context'] = temp_conflict
+
+                    disagreements.append(classified)
+                    break
+
+        # 2. 主题分歧检测（相同主题不同结论）
+        thematic_disagreements = []
+        key_themes = {}
+
+        # 提取主题词
+        for point in all_points:
+            words = re.findall(r'[\u4e00-\u9fff]{2,}|[a-z]{3,}', point['content'].lower())
+            for word in words:
+                if word not in key_themes:
+                    key_themes[word] = []
+                key_themes[word].append(point)
+
+        # 检测同一主题下的不同结论
+        for theme, theme_points in key_themes.items():
+            if len(theme_points) >= 3:
+                # 检查这些点是否表达了不同的观点
+                for i in range(len(theme_points)):
+                    for j in range(i+1, len(theme_points)):
+                        p1 = theme_points[i]
+                        p2 = theme_points[j]
+                        similarity = self.compute_similarity(p1['content'], p2['content'])
+
+                        # 如果包含相同主题但相似度低，可能是观点分歧
+                        if 0.2 < similarity < 0.5:
+                            thematic_disagreements.append({
+                                'type': '主题分歧',
+                                'theme': theme,
+                                'view1': p1['content'],
+                                'view2': p2['content'],
+                                'source1': p1['source'],
+                                'source2': p2['source'],
+                                'confidence': 0.6,
+                                'similarity': round(similarity, 2)
                             })
-                            break
 
-        # 提取研究空白汇总
+        # 合并并限制分歧数量
+        all_disagreements = disagreements + thematic_disagreements
+        all_disagreements = all_disagreements[:8]
+
+        # 按置信度排序
+        all_disagreements.sort(key=lambda x: x.get('confidence', 0), reverse=True)
+
+        # 提取研究空白汇总 - 增强版
         all_gaps = []
-        for result in results:
-            all_gaps.extend(result.research_gaps)
+        gap_categories = defaultdict(list)
 
-        # 去重研究空白
-        seen_gaps = set()
-        unique_gaps = []
+        for result in results:
+            for gap in result.research_gaps:
+                all_gaps.append({
+                    'content': gap,
+                    'source': result.citation.citation_key,
+                    'document': result.source
+                })
+
+        # 分类研究空白
+        gap_keywords = {
+            '方法论': ['方法', '样本', '实验', '数据', 'method', 'sample', 'experimental', 'data'],
+            '理论': ['理论', '模型', '框架', '机制', 'theory', 'model', 'framework', 'mechanism'],
+            '应用': ['应用', '实践', '落地', '场景', 'application', 'practice', 'implementation', 'scenario'],
+            '范围': '范围', '局限', '通用', '特定', 'scope', 'limitation', 'general', 'specific',
+            '未来': ['未来', '方向', '展望', 'potential', 'future', 'direction', 'outlook']
+        }
+
         for gap in all_gaps:
-            normalized = re.sub(r'[^\w\u4e00-\u9fff]', '', gap).lower()
-            if normalized and normalized not in seen_gaps:
-                seen_gaps.add(normalized)
-                unique_gaps.append(gap)
+            content_lower = gap['content'].lower()
+            categorized = False
+
+            for category, keywords in gap_keywords.items():
+                if isinstance(keywords, list):
+                    if any(kw in content_lower for kw in keywords):
+                        gap_categories[category].append(gap)
+                        categorized = True
+                        break
+                else:
+                    if keywords in content_lower:
+                        gap_categories['其他'].append(gap)
+                        categorized = True
+                        break
+
+            if not categorized:
+                gap_categories['未分类'].append(gap)
+
+        # 去重并格式化研究空白
+        unique_gaps = []
+        seen_gaps = set()
+
+        for category, gaps in gap_categories.items():
+            for gap in gaps:
+                normalized = re.sub(r'[^\w\u4e00-\u9fff]', '', gap['content']).lower()
+                if normalized and normalized not in seen_gaps and len(normalized) > 5:
+                    seen_gaps.add(normalized)
+                    unique_gaps.append({
+                        'content': gap['content'],
+                        'category': category,
+                        'source': gap['source']
+                    })
+
+        unique_gaps = unique_gaps[:10]
+
+        # 计算统计信息
+        consensus_rate = len(consensus) / total_points * 100 if total_points > 0 else 0
+        disagreement_rate = len(all_disagreements) / total_points * 100 if total_points > 0 else 0
+
+        # 主题分析
+        theme_analysis = []
+        sorted_themes = sorted(key_themes.items(), key=lambda x: len(x[1]), reverse=True)[:10]
+
+        for theme, points in sorted_themes:
+            if len(points) >= 2:
+                theme_analysis.append({
+                    'theme': theme,
+                    'frequency': len(points),
+                    'sources': list(set(p['source'] for p in points)),
+                    'avg_score': sum(p['score'] for p in points) / len(points)
+                })
 
         return {
-            'consensus': consensus[:5],
-            'disagreements': disagreements[:3],
-            'research_gaps': unique_gaps[:5],
-            'total_documents': len(results),
-            'consensus_rate': len(consensus) / len(all_points) * 100 if all_points else 0
+            'consensus': consensus[:8],
+            'disagreements': all_disagreements,
+            'research_gaps': unique_gaps,
+            'theme_analysis': theme_analysis[:5],
+            'statistics': {
+                'total_documents': total_sources,
+                'total_points': total_points,
+                'consensus_count': len(consensus),
+                'disagreement_count': len(all_disagreements),
+                'consensus_rate': round(consensus_rate, 1),
+                'disagreement_rate': round(disagreement_rate, 1),
+                'avg_consensus_strength': round(sum(c['support_rate'] for c in consensus) / len(consensus), 1) if consensus else 0
+            }
         }
 
 
@@ -707,27 +969,110 @@ class ReviewGenerator:
         if verification:
             review += "\n## " + ("交叉验证分析" if self.language == "zh" else "Cross-Verification Analysis") + "\n\n"
 
-            # 共识
-            if verification['consensus']:
-                review += "### " + ("共识观点" if self.language == "zh" else "Consensus Views") + "\n\n"
-                for i, consensus in enumerate(verification['consensus'], 1):
-                    sources_str = ", ".join(consensus['sources'])
-                    review += f"{i}. **{consensus['content']}**\n   - 来源: {sources_str} (共 {consensus['count']} 篇)\n\n"
-
-            # 分歧
-            if verification['disagreements']:
-                review += "### " + ("观点分歧" if self.language == "zh" else "Conflicting Views") + "\n\n"
-                for i, disagreement in enumerate(verification['disagreements'], 1):
-                    review += f"{i}. **分歧 {i}:**\n"
-                    review += f"   - 观点 A ({disagreement['source1']}): {disagreement['view1']}\n"
-                    review += f"   - 观点 B ({disagreement['source2']}): {disagreement['view2']}\n\n"
-
-            # 研究空白
-            if verification['research_gaps']:
-                review += "### " + ("研究空白" if self.language == "zh" else "Research Gaps") + "\n\n"
-                for i, gap in enumerate(verification['research_gaps'], 1):
-                    review += f"{i}. {gap}\n"
+            # 统计概览
+            stats = verification.get('statistics', {})
+            if stats:
+                review += "### " + ("统计概览" if self.language == "zh" else "Statistics Overview") + "\n\n"
+                if self.language == "zh":
+                    review += f"- 分析文档数: **{stats.get('total_documents', 0)}** 篇\n"
+                    review += f"- 提取观点数: **{stats.get('total_points', 0)}** 条\n"
+                    review += f"- 共识观点数: **{stats.get('consensus_count', 0)}** 条\n"
+                    review += f"- 分歧观点数: **{stats.get('disagreement_count', 0)}** 处\n"
+                    review += f"- 共识率: **{stats.get('consensus_rate', 0)}%**\n"
+                    review += f"- 分歧率: **{stats.get('disagreement_rate', 0)}%**\n"
+                    avg_strength = stats.get('avg_consensus_strength', 0)
+                    if avg_strength > 0:
+                        strength_label = "强" if avg_strength > 60 else "中" if avg_strength > 30 else "弱"
+                        review += f"- 平均共识强度: **{avg_strength}%** ({strength_label})\n"
+                else:
+                    review += f"- Total documents: **{stats.get('total_documents', 0)}**\n"
+                    review += f"- Total points extracted: **{stats.get('total_points', 0)}**\n"
+                    review += f"- Consensus views: **{stats.get('consensus_count', 0)}**\n"
+                    review += f"- Conflicting views: **{stats.get('disagreement_count', 0)}**\n"
+                    review += f"- Consensus rate: **{stats.get('consensus_rate', 0)}%**\n"
+                    review += f"- Disagreement rate: **{stats.get('disagreement_rate', 0)}%**\n"
                 review += "\n"
+
+            # 共识 - 增强版
+            if verification['consensus']:
+                review += "### " + ("共识观点分析" if self.language == "zh" else "Consensus Analysis") + "\n\n"
+                for i, consensus in enumerate(verification['consensus'], 1):
+                    sources_str = ", ".join(set(consensus['sources']))
+                    support_rate = consensus.get('support_rate', consensus.get('source_count', 0) * 10)
+                    avg_sim = consensus.get('avg_similarity', 0)
+                    confidence = consensus.get('confidence', '中')
+
+                    review += f"#### {i}. {consensus['content']}\n\n"
+                    review += f"- **支持来源** ({len(set(consensus['sources']))} 篇): {sources_str}\n"
+                    review += f"- **支持率**: {support_rate}%\n"
+                    review += f"- **相似度**: {avg_sim}\n"
+                    review += f"- **共识强度**: {confidence}\n\n"
+
+            # 分歧 - 增强版
+            if verification['disagreements']:
+                review += "### " + ("观点分歧分析" if self.language == "zh" else "Conflicting Views Analysis") + "\n\n"
+                for i, disagreement in enumerate(verification['disagreements'], 1):
+                    review += f"#### 分歧 {i}\n\n"
+
+                    # 分歧类型
+                    disagreement_type = disagreement.get('type', '未知类型')
+                    review += f"**类型**: {disagreement_type}\n\n"
+
+                    # 观点对比
+                    review += f"**观点 A** ({disagreement.get('source1', 'Unknown')}):\n"
+                    review += f"> {disagreement.get('view1', 'N/A')}\n\n"
+
+                    review += f"**观点 B** ({disagreement.get('source2', 'Unknown')}):\n"
+                    review += f"> {disagreement.get('view2', 'N/A')}\n\n"
+
+                    # 额外信息
+                    if 'confidence' in disagreement:
+                        conf_label = disagreement['confidence']
+                        conf_value = int(conf_label) if isinstance(conf_label, (int, float)) else (
+                            0.9 if '高' in str(conf_label) or 'high' in str(conf_label).lower() else
+                            0.6 if '中' in str(conf_label) or 'medium' in str(conf_label).lower() else 0.3
+                        )
+                        review += f"- **置信度**: {conf_label} ({int(conf_value * 100)}%)\n"
+
+                    if 'temporal_context' in disagreement:
+                        review += f"- **时间背景**: {disagreement['temporal_context']}\n"
+
+                    if 'theme' in disagreement:
+                        review += f"- **相关主题**: {disagreement['theme']}\n"
+
+                    if 'similarity' in disagreement:
+                        review += f"- **内容相似度**: {disagreement['similarity']}\n"
+
+                    review += "\n"
+
+            # 主题分析
+            if verification.get('theme_analysis'):
+                review += "### " + ("主题分布分析" if self.language == "zh" else "Theme Distribution") + "\n\n"
+                for i, theme in enumerate(verification['theme_analysis'], 1):
+                    sources_count = len(theme['sources'])
+                    avg_score = theme.get('avg_score', 0)
+                    review += f"{i}. **{theme['theme']}** - 出现 {theme['frequency']} 次\n"
+                    review += f"   - 涉及来源: {sources_count} 个\n"
+                    review += f"   - 平均重要性: {avg_score:.1f}\n\n"
+
+            # 研究空白 - 增强版（带分类）
+            if verification['research_gaps']:
+                review += "### " + ("研究空白汇总" if self.language == "zh" else "Research Gaps Summary") + "\n\n"
+
+                # 按分类展示
+                categorized_gaps = {}
+                for gap in verification['research_gaps']:
+                    category = gap.get('category', '未分类')
+                    if category not in categorized_gaps:
+                        categorized_gaps[category] = []
+                    categorized_gaps[category].append(gap)
+
+                for category, gaps in categorized_gaps.items():
+                    review += f"#### {category}\n\n"
+                    for i, gap in enumerate(gaps, 1):
+                        source = gap.get('source', 'Unknown')
+                        review += f"{i}. {gap['content']} `{source}`\n"
+                    review += "\n"
 
         # 详细文档分析
         review += "\n## " + ("详细分析" if self.language == "zh" else "Detailed Analysis") + "\n\n"
