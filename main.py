@@ -11,6 +11,206 @@
 - Windows 兼容：完全支持 Windows 路径和编码
 
 可以作为独立脚本运行，也可以作为 MCP Server 运行
+
+=============================================================================
+SYSTEM PROMPT: 详细共识与分歧分析标准 (Detailed Consensus & Disagreements Analysis)
+=============================================================================
+
+本 Skill 的共识与分歧分析遵循以下详细标准，作为所有输出的基准要求：
+
+1. 共识分析标准 (Consensus Analysis Standards)
+-----------------------------------------------
+
+1.1 计算方法 (Computation Methods)
+   - 使用加权相似度计算：Jaccard 相似度 × 长度惩罚系数 + 关键词重叠加权
+   - 长度惩罚：避免过长文本匹配度过高（当长度比 < 0.5 时应用）
+   - 关键词加权：对包含"重要、关键、核心、结论、发现"等词汇的点给予额外权重
+   - 相似度阈值：默认 0.7（可通过配置调整）
+
+1.2 共识指标 (Consensus Metrics)
+   - 支持率 (Support Rate): 支持该共识的来源数量 / 总来源数 × 100%
+   - 相似度 (Similarity): 平均相似度分数（0-1）
+   - 共识强度 (Consensus Strength): 高 (>60%) / 中 (30-60%) / 低 (<30%)
+   - 来源数量 (Source Count): 支持该共识的来源总数
+
+1.3 共识报告格式 (Consensus Reporting Format)
+   ```
+   #### N. [共识内容]
+   - 支持来源 (X 篇): [来源1, 来源2, ...]
+   - 支持率: XX%
+   - 相似度: 0.XX
+   - 共识强度: 高/中/低
+   ```
+
+2. 分歧分析标准 (Disagreement Analysis Standards)
+------------------------------------------------
+
+2.1 分歧类型分类 (Disagreement Classification)
+   识别以下类型的分歧：
+
+   a) 直接对立 (Direct Opposition)
+      - 检测对立词对：支持/反对, 有效/无效, 提高/降低, 积极/消极等
+      - 中英文双语支持：support/oppose, effective/ineffective, increase/decrease等
+      - 置信度：高 (0.9)
+
+   b) 数据与观点分歧 (Data vs Opinion Disagreement)
+      - 一方提供统计数据、p值、实验结果
+      - 另一方提供主观观点、看法、信仰
+      - 置信度：中 (0.7)
+
+   c) 研究结果不一致 (Result Inconsistency)
+      - 双方都提供研究发现，但结论不同
+      - 关键词：发现, 表明, 结果, found, show, result
+      - 置信度：中高 (0.75)
+
+   d) 适用范围分歧 (Scope Disagreement)
+      - 一方主张特定/部分情况
+      - 另一方主张普遍/一般情况
+      - 关键词：某些/部分 vs 所有/普遍, certain vs all
+      - 置信度：中低 (0.65)
+
+   e) 主题分歧 (Thematic Disagreement)
+      - 相同主题但相似度低 (0.2 < similarity < 0.5)
+      - 需包含相同的主题词
+      - 置信度：中 (0.6)
+
+2.2 增强检测 (Enhanced Detection)
+   - 方法论差异 (Methodological Differences):
+     * 定量 vs 定性
+     * 实证 vs 理论
+   - 时间冲突 (Temporal Conflicts):
+     * 跨度超过 5 年的研究可能反映不同时代观点
+   - 置信度评分 (Confidence Scoring):
+     * 基于分歧类型的固有置信度
+     * 0-1 范围，四舍五入到百分比
+
+2.3 分歧报告格式 (Disagreement Reporting Format)
+   ```
+   #### 分歧 N
+   类型: [分歧类型]
+
+   观点 A ([来源]):
+   > [观点内容]
+
+   观点 B ([来源]):
+   > [观点内容]
+
+   - 置信度: [类型] (XX%)
+   - 时间背景: [如适用]
+   - 相关主题: [如适用]
+   - 内容相似度: [如适用]
+   ```
+
+3. 统计概览标准 (Statistics Overview Standards)
+------------------------------------------------
+
+3.1 必须报告的指标 (Required Metrics)
+   - 分析文档数 (Total Documents)
+   - 提取观点数 (Total Points Extracted)
+   - 共识观点数 (Consensus Views Count)
+   - 分歧观点数 (Conflicting Views Count)
+   - 共识率 (Consensus Rate): 共识数 / 总观点数 × 100%
+   - 分歧率 (Disagreement Rate): 分歧数 / 总观点数 × 100%
+   - 平均共识强度 (Average Consensus Strength): 所有共识支持率的平均值
+
+3.2 统计报告格式 (Statistics Reporting Format)
+   ```
+   ### 统计概览
+   - 分析文档数: X 篇
+   - 提取观点数: X 条
+   - 共识观点数: X 条
+   - 分歧观点数: X 处
+   - 共识率: XX%
+   - 分歧率: XX%
+   - 平均共识强度: XX% (强/中/弱)
+   ```
+
+4. 主题分析标准 (Theme Analysis Standards)
+------------------------------------------------
+
+4.1 主题提取 (Theme Extraction)
+   - 从内容中提取 2 字以上中文或 3 字以上英文单词
+   - 统计每个主题的出现频率
+   - 仅显示出现频率 ≥ 2 的主题
+
+4.2 主题报告格式 (Theme Reporting Format)
+   ```
+   ### 主题分布分析
+   N. [主题名] - 出现 X 次
+   - 涉及来源: X 个
+   - 平均重要性: X.X
+   ```
+
+5. 研究空白标准 (Research Gaps Standards)
+------------------------------------------------
+
+5.1 空白分类 (Gap Categorization)
+   - 方法论: 涉及方法、样本、实验、数据
+   - 理论: 涉及理论、模型、框架、机制
+   - 应用: 涉及应用、实践、落地、场景
+   - 范围: 涉及范围、局限、通用、特定
+   - 未来: 涉及未来、方向、展望、potential
+   - 未分类: 不属于上述类别
+
+5.2 空白检测关键词 (Gap Detection Keywords)
+   - 中文: 限制, 局限, 不足, 缺乏, 缺少, 有待, 未来, 开放问题, 未解决,
+            需进一步, 尚未, 仍需
+   - 英文: further, future, limitation, lack, need, challenge, gap,
+            open problem, unresolved, require further, not yet
+
+5.3 空白报告格式 (Gap Reporting Format)
+   ```
+   ### 研究空白汇总
+
+   #### [类别名]
+   N. [空白内容] [来源]
+   ...
+   ```
+
+6. 输出质量标准 (Output Quality Standards)
+------------------------------------------------
+
+6.1 最低要求 (Minimum Requirements)
+   - 每个共识必须包含：内容、来源、支持率、相似度、强度
+   - 每个分歧必须包含：类型、双方观点、来源、置信度
+   - 每个研究空白必须包含：内容、类别、来源
+   - 统计概览必须完整
+
+6.2 可选增强 (Optional Enhancements)
+   - 方法论差异说明
+   - 时间背景信息
+   - 主题分布分析
+   - 相似度分数显示
+
+7. 本地化支持 (Localization Support)
+------------------------------------------------
+
+本标准支持中英双语输出：
+- 中文输出使用：共识观点、观点分歧、研究空白汇总、统计概览
+- 英文输出使用：Consensus Analysis、Conflicting Views、Research Gaps、Statistics Overview
+
+=============================================================================
+使用说明 (Usage Instructions)
+=============================================================================
+
+这些标准通过 CrossVerifier 类实现：
+- compute_similarity(): 计算加权相似度
+- analyze_consensus(): 执行完整的共识与分歧分析
+- _classify_disagreement_type(): 分歧类型分类
+- _detect_methodological_differences(): 检测方法论差异
+- _detect_temporal_conflict(): 检测时间冲突
+
+要启用增强分析，确保 CrossVerifier 的 similarity_threshold 设置为 0.7 或更高。
+
+=============================================================================
+版本信息 (Version Information)
+=============================================================================
+
+标准版本: v2.1 Enhanced
+最后更新: 2026-03-12
+维护者: Literature Review Skill Team
+
+=============================================================================
 """
 
 import re
