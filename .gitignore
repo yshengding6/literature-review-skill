@@ -210,3 +210,7 @@ __marimo__/
 output/
 *.md.bak
 tests/generated_review.md
+
+# Configuration files with sensitive data
+config.yaml
+config.yml

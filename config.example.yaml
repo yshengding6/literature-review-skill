@@ -1,0 +1,56 @@
+# Literature Review Skill Configuration Example
+# Copy this file to config.yaml and fill in your values
+
+# Feishu Integration Settings
+feishu:
+  # Enable Feishu integration (set to true to activate)
+  enabled: false
+
+  # Feishu App Credentials
+  # Get these from https://open.feishu.cn/app
+  app_id: "cli_xxxxxxxx"  # Your Feishu App ID
+  app_secret: "your_app_secret_here"  # Your Feishu App Secret
+
+  # API Configuration
+  api_base_url: "https://open.feishu.cn/open-apis"
+  timeout: 30  # Request timeout in seconds
+
+# Analysis Configuration
+analysis:
+  # Consensus similarity threshold (0.0 - 1.0)
+  similarity_threshold: 0.7
+
+  # Maximum number of key points to extract per document
+  max_key_points: 15
+
+  # Number of consensus/disagreements to report
+  max_consensus: 8
+  max_disagreements: 8
+  max_research_gaps: 10
+
+  # Enable detailed analysis (includes all depth analysis)
+  detailed_analysis: true
+
+# Output Configuration
+output:
+  # Default language: zh (Chinese) or en (English)
+  default_language: zh
+
+  # Generate BibTeX file by default
+  generate_bibtex: true
+
+  # Output directory for generated files
+  output_dir: "./output"
+
+# Web Search Configuration (placeholder for future implementation)
+web_search:
+  enabled: false
+  api_key: ""
+  search_engine: ""  # Options: google, bing, etc.
+  max_results: 8
+  search_depth: medium  # Options: basic, medium, deep
+
+# Logging Configuration
+logging:
+  level: INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_file: "literature_review.log"
