@@ -1,84 +1,305 @@
-# Literature Review Skill
+# Literature Review Skill (Enhanced Edition)
 
-一个用于文献调研和综述生成的 AI Skill，支持本地文档分析和网络搜索混合调研方式。
+A professional-grade tool for academic research, supporting document analysis, cross-verification, and comprehensive literature review generation.
 
-## 功能特性
+## Features
 
-- 📄 **本地文档分析** - 支持分析多种格式的本地文档
-- 🌐 **网络搜索** - 自动搜索相关网络资源
-- 📊 **综合综述** - 生成包含摘要、分析、对比、结论的完整报告
-- 🔍 **智能提取** - 自动提取关键点和核心观点
-- 📝 **Markdown 输出** - 生成易于阅读和编辑的 Markdown 格式报告
+### Core Capabilities
+- [x] **Document Analysis** - Analyze multiple document formats (TXT, PDF)
+- [x] **Cross-Verification** - Identify consensus and disagreements across papers
+- [x] **Research Gap Detection** - Automatically detect research gaps and limitations
+- [x] **Source Tracing** - Strict citation format [Author, Year, Page] to prevent hallucinations
+- [x] **Web Search** - Integrate with web resources (mock implementation)
 
-## 安装
+### Advanced Features
+- [x] **PDF Parsing** - Support for academic PDF papers with pypdf
+- [x] **BibTeX Export** - Generate Zotero/LaTeX compatible references
+- [x] **Multi-Language** - Support for Chinese and English output
+- [x] **Windows Compatible** - Full Windows path and encoding support
+
+## Installation
+
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
+
+### Quick Install
 
 ```bash
-# 安装依赖
+# Clone the repository
+git clone https://github.com/yshengding6/literature-review-skill.git
+cd literature-review-skill
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 使用方法
+### Windows Quick Start
 
-### 作为 MCP Server 运行
+For Windows users, follow these steps:
+
+1. **Install Python** from https://python.org (include pip in installation)
+
+2. **Open Command Prompt** or PowerShell:
+
+```cmd
+# Navigate to the project directory
+cd D:\path\to\literature-review-skill
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+3. **Run the tool**:
+
+```cmd
+# Basic usage
+python main.py --topic "Artificial Intelligence in Healthcare" --files doc1.txt doc2.pdf
+
+# With options
+python main.py --topic "AI in Healthcare" --files doc1.txt doc2.pdf --lang en --depth deep
+
+# Disable BibTeX export
+python main.py --topic "AI Research" --files doc1.txt --no-bibtex
+```
+
+## Usage
+
+### Command Line Interface
+
+```bash
+# Basic review generation
+python main.py --topic "<research_topic>" --files file1.txt file2.pdf
+
+# With language selection (zh/en)
+python main.py --topic "<topic>" --lang en --files file1.txt
+
+# With search depth (basic/medium/deep)
+python main.py --topic "<topic>" --depth deep --files file1.txt
+
+# Disable web search
+python main.py --topic "<topic>" --no-web --files file1.txt
+
+# Disable BibTeX export
+python main.py --topic "<topic>" --no-bibtex --files file1.txt
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|--------|----------|-------------|
+| `--topic` | string | Required | Research topic |
+| `--files` | list | Optional | Local document file paths |
+| `--lang` | string | zh | Output language (zh/en) |
+| `--depth` | string | medium | Web search depth (basic/medium/deep) |
+| `--no-web` | flag | False | Disable web search |
+| `--no-bibtex` | flag | False | Disable BibTeX export |
+
+### As MCP Server
 
 ```bash
 python main.py
 ```
 
-### 通过 Claude Code 调用
+## Output
 
+### Markdown Review Report
+
+The tool generates a comprehensive Markdown report including:
+
+1. **Research Background** - Context and objectives
+2. **Source Description** - List of analyzed documents
+3. **Key Findings** - Key points with citations [Author, Year]
+4. **Cross-Verification Analysis**:
+   - Consensus Views - Agreements across sources
+   - Conflicting Views - Disagreements identified
+   - Research Gaps - Limitations and future directions
+5. **Detailed Analysis** - Per-document breakdown
+6. **References** - Formatted bibliography
+
+### BibTeX File
+
+Automatically generates `<topic>_references.bib` with Zotero/LaTeX compatible format:
+
+```bibtex
+@misc{ref1,
+  author = {Smith, John},
+  title = {Artificial Intelligence in Healthcare},
+  year = {2024},
+  note = {paper.pdf}
+}
 ```
-/literature-review --topic "人工智能在教育中的应用" --files ["doc1.pdf", "doc2.txt"] --web-search true --search-depth medium
+
+## Configuration
+
+### Optional: config.yaml
+
+Create a `config.yaml` file for custom settings:
+
+```yaml
+# API Configuration
+web_search:
+  enabled: true
+  api_key: ""  # For Google/Bing Search API
+  provider: "mock"  # mock/google/bing
+
+# Output Settings
+output:
+  language: "zh"  # zh or en
+  generate_bibtex: true
+  output_dir: "."
+
+# Analysis Settings
+analysis:
+  similarity_threshold: 0.7  # For cross-verification
+  max_key_points: 15
+  extract_research_gaps: true
 ```
 
-## 参数说明
+## Examples
 
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| topic | string | 是 | 研究主题 |
-| files | list | 否 | 本地文档路径列表 |
-| web_search | bool | 否 | 是否网络搜索（默认true） |
-| search_depth | string | 否 | 搜索深度（basic/medium/deep） |
+### Example 1: Basic Review
 
-## 输出示例
+```bash
+python main.py --topic "Machine Learning in Finance" --files examples/sample_document.txt
+```
 
-综述报告将包含以下章节：
+Output:
+- `Machine_Learning_in_Finance_综述.md` (Chinese)
+- `Machine_Learning_in_Finance_references.bib`
 
-1. 研究背景与目标
-2. 资料来源说明
-3. 核心观点摘要
-4. 详细分析（按来源）
-5. 横向对比分析
-6. 结论与建议
-7. 参考资料列表
+### Example 2: English Output
 
-## 示例
+```bash
+python main.py --topic "Deep Learning" --lang en --files doc1.pdf doc2.txt
+```
 
+Output:
+- `Deep_Learning_Review.md` (English)
+- `Deep_Learning_references.bib`
+
+### Example 3: Cross-Verification Only
+
+When you have multiple documents and want to analyze consensus:
+
+```bash
+python main.py --topic "AI Ethics" --files paper1.txt paper2.txt paper3.pdf
+```
+
+The review will include a "Cross-Verification Analysis" section showing:
+- Views supported by multiple sources (Consensus)
+- Conflicting opinions across sources (Disagreements)
+- Combined research gaps across all papers
+
+## Document Formats Supported
+
+| Format | Extension | Notes |
+|---------|------------|--------|
+| Plain Text | .txt | UTF-8, GBK, Latin-1 encoding support |
+| PDF | .pdf | Requires `pypdf` package |
+| Markdown | .md | Read as plain text |
+| Code files | .py, .js, etc. | Read as plain text |
+
+## Citation Format
+
+The tool enforces strict citation format: `[Author, Year]`
+
+This format:
+- Prevents AI hallucinations by requiring source attribution
+- Is compatible with academic writing standards
+- Links to BibTeX entries for proper references
+
+## Troubleshooting
+
+### Windows Encoding Issues
+
+If you see encoding errors:
+
+```cmd
+chcp 65001
+set PYTHONIOENCODING=utf-8
+python main.py --topic "Your Topic" --files doc.txt
+```
+
+### PDF Parsing Errors
+
+For better PDF parsing (especially multi-column layouts):
+
+1. Install `marker-pdf`:
+```cmd
+pip install marker-pdf
+```
+
+2. Uncomment the line in `main.py`:
 ```python
-from main import ReviewGenerator
-
-# 创建综述生成器
-generator = ReviewGenerator()
-
-# 生成综述
-review = generator.generate_review(
-    topic="机器学习在医疗诊断中的应用",
-    files=["research_paper1.pdf", "case_study.docx"],
-    web_search=True,
-    search_depth="medium"
-)
-
-# 保存综述
-with open("review.md", "w", encoding="utf-8") as f:
-    f.write(review)
+# from pypdf import PdfReader  # Comment this
+from marker_pdf import convert_pdf  # Uncomment this
 ```
 
-## 注意事项
+### Empty Directory Error
 
-- 当前版本为模拟搜索实现，实际使用需要接入真实搜索 API
-- 支持的文档格式取决于文件内容是否可读为文本
-- 建议对生成的综述进行人工审核和补充
+If you get "No files found" error:
+- Ensure file paths are correct
+- Use full paths, not relative paths
+- On Windows, use forward slashes or escape backslashes
+
+## Development
+
+### Running Tests
+
+```bash
+# Run all tests
+python tests/test_analyzer.py
+
+# Run specific test
+python -m pytest tests/ -v
+```
+
+### Project Structure
+
+```
+literature-review-skill/
+├── main.py              # Core implementation
+├── requirements.txt       # Python dependencies
+├── README.md             # This file
+├── config.yaml.example   # Configuration template
+├── examples/             # Example documents
+│   ├── sample_document.txt
+│   └── sample_document2.txt
+└── tests/               # Unit tests
+    └── test_analyzer.py
+```
 
 ## License
 
-MIT
+MIT License - feel free to use and modify for your research needs.
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+## Acknowledgments
+
+Built with:
+- `fastmcp` - MCP framework
+- `pypdf` - PDF parsing
+- Standard Python libraries for text processing
+
+## Version History
+
+### v2.0 (Enhanced Edition)
+- Added cross-verification for consensus/disagreement
+- Added research gap detection
+- Added strict citation format with source tracing
+- Added PDF parsing support
+- Added BibTeX export for Zotero/LaTeX
+- Added multi-language support (zh/en)
+- Improved Windows compatibility
+
+### v1.0
+- Initial release with basic document analysis
+- Mock web search functionality
+- Markdown review generation

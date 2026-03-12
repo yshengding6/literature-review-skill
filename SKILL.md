@@ -1,43 +1,142 @@
 ---
 name: literature-review
-version: 1.0.0
-description: 调研文档并生成综合性综述报告。支持本地文档分析和网络搜索，提供完整的研究综述，包括摘要、分析、对比、结论和建议。
-tags: [research, documentation, analysis, review]
+version: 2.0.0
+description: 学术级文献调研综述工具。支持 PDF 解析、交叉验证、研究空白检测、引用溯源和 BibTeX 导出。
+tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex]
 author: Claude
 ---
 
-# 文献调研综述 Skill
+# Literature Review Skill (Enhanced Edition)
 
-## 使用场景
+A professional-grade tool for academic research that supports document analysis, cross-verification, and comprehensive literature review generation.
 
-当你需要：
-- 调研相关文献并生成综述
-- 分析多个文档并提取核心观点
-- 对比不同来源的资料
-- 生成综合性研究摘要
+## New Features (v2.0)
 
-## 功能特性
+### Logic Enhancement
+- [x] **Cross-Verification** - Identify consensus and disagreements across multiple papers
+- [x] **Research Gap Detection** - Automatically detect research gaps and limitations in each review
+- [x] **Source Tracing** - Enforce strict citation format [Author, Year, Page] to prevent AI hallucinations
 
-- **混合调研方式**：支持本地文件分析和网络搜索
-- **智能摘要**：提取核心观点和关键信息
-- **深度分析**：包含背景、方法、结果、讨论等维度
-- **对比评估**：对不同文档进行横向对比
-- **完整报告**：生成包含摘要、分析、对比、结论和建议的综合综述
+### Tooling & Compatibility
+- [x] **PDF Parsing** - Integrated pypdf for better handling of multi-column academic layouts
+- [x] **BibTeX Support** - Automatically generate references.bib file for Zotero/LaTeX
+- [x] **Windows Compatible** - All file I/O operations use encoding='utf-8' and pathlib for cross-platform handling
 
-## 输入参数
+### Documentation
+- [x] **README.md** - Updated with Quick Start guide for Windows users
+- [x] **config.yaml.example** - Configuration template for API keys and default output languages (supports zh/en)
 
-- `topic` - 研究主题（必填）
-- `files` - 本地文档文件路径（可选，支持多文件）
-- `web_search` - 是否进行网络搜索（默认：true）
-- `search_depth` - 网络搜索深度（默认：medium，可选：basic/medium/deep）
+### Testing
+- [x] **Unit Tests** - Added tests for PDF text extraction, citation extraction, and error handling
 
-## 输出格式
+## Usage Scenarios
 
-生成 Markdown 格式的综合综述报告，包含：
-1. 研究背景与目标
-2. 文档/资料来源说明
-3. 核心观点摘要
-4. 详细分析（按来源）
-5. 横向对比分析
-6. 结论与建议
-7. 参考资料列表
+Use this skill when you need to:
+- Conduct academic literature reviews
+- Analyze multiple papers and identify consensus/disagreement
+- Detect research gaps across sources
+- Generate properly formatted citations and BibTeX files
+- Analyze PDF academic papers
+- Work in Chinese or English
+
+## Capabilities
+
+### Document Analysis
+- **Formats Supported**: TXT, PDF (with pypdf), MD, code files
+- **Encoding Support**: UTF-8, GBK, Latin-1 (automatic detection)
+- **Citation Extraction**: Automatically extracts author, year, and title
+- **Research Gap Detection**: Identifies limitations and future work needed
+
+### Cross-Verification
+- **Consensus Detection**: Finds views supported by multiple sources (with similarity threshold)
+- **Disagreement Detection**: Identifies conflicting opinions across papers
+- **Research Gap Aggregation**: Combines gaps from all documents
+
+### Output Generation
+- **Markdown Review**: Comprehensive report with citations
+- **BibTeX File**: Zotero/LaTeX compatible references
+- **Multi-Language**: Support for Chinese (zh) and English (en) output
+
+## Input Parameters
+
+### generate_literature_review
+- `topic` - Research topic (required)
+- `files` - Local document file paths (optional)
+- `web_search` - Enable web search (default: true)
+- `search_depth` - Search depth: basic/medium/deep (default: medium)
+- `language` - Output language: zh/en (default: zh)
+- `output_bibtex` - Generate BibTeX file (default: true)
+
+### analyze_document
+- `file_path` - Document file path (required)
+- `language` - Output language: zh/en (default: zh)
+
+### cross_verify_documents
+- `files` - List of document file paths (required)
+- `language` - Output language: zh/en (default: zh)
+
+## Output Format
+
+### Markdown Review Report Structure
+
+1. Research Background & Objectives
+2. Source Description (with statistics)
+3. Key Findings (with citations [Author, Year])
+4. Cross-Verification Analysis:
+   - Consensus Views (with source count)
+   - Conflicting Views (side-by-side comparison)
+   - Research Gaps (aggregated from all sources)
+5. Detailed Analysis (per-document breakdown)
+6. References (formatted bibliography)
+
+### BibTeX Format
+
+```bibtex
+@misc{ref1,
+  author = {Smith, John},
+  title = {Artificial Intelligence in Healthcare},
+  year = {2024},
+  note = {paper.pdf}
+}
+```
+
+## Citation Format
+
+The skill enforces strict citation format: `[Author, Year]` or `[Author, Year, Page]`
+
+This format:
+- Prevents AI hallucinations by requiring source attribution
+- Is compatible with academic writing standards
+- Links to BibTeX entries for proper references
+
+## Configuration
+
+Optional `config.yaml` file for custom settings:
+
+```yaml
+web_search:
+  enabled: true
+  api_key: ""
+  provider: "mock"
+
+output:
+  language: "zh"  # zh or en
+  generate_bibtex: true
+
+analysis:
+  similarity_threshold: 0.7
+  max_key_points: 15
+  extract_research_gaps: true
+```
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## Dependencies
+
+- `fastmcp>=0.10.0` - MCP framework
+- `httpx>=0.27.0` - HTTP client
+- `pypdf>=4.0.0` - PDF parsing
