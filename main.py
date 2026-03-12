@@ -562,7 +562,7 @@ class ReviewGenerator:
         """格式化综述报告"""
 
         # 按来源类型统计
-        file_count = sum(1 for s in sources if s.get('type') == 'file' and 'error' not in s.get('result', {}))
+        file_count = sum(1 for s in sources if s.get('type') == 'file' and 'error' not in s)
         web_count = sum(1 for s in sources if s.get('type') == 'web')
         error_count = sum(1 for s in sources if s.get('type') == 'error')
 
@@ -577,6 +577,7 @@ class ReviewGenerator:
             total_sources=len(sources),
             file_count=file_count,
             web_count=web_count,
+            error_count=error_count,
             consensus_rate=verification.get('consensus_rate', 0) if verification else 0
         )
 
