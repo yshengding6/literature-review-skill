@@ -9,7 +9,8 @@ A professional-grade tool for academic research, supporting document analysis, c
 - [x] **Cross-Verification** - Identify consensus and disagreements across papers
 - [x] **Research Gap Detection** - Automatically detect research gaps and limitations
 - [x] **Source Tracing** - Strict citation format [Author, Year, Page] to prevent hallucinations
-- [x] **Web Search** - Integrate with web resources (mock implementation)
+- [x] **Web Search** - Integrate with web resources (**Note: Currently mock implementation only**)
+   > The web search functionality returns simulated results. For real search functionality, integrate with Google Search API, Bing API, or other search services and configure in `config.yaml`.
 
 ### Advanced Features
 - [x] **PDF Parsing** - Support for academic PDF papers with pypdf

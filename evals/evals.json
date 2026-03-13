@@ -1,0 +1,157 @@
+{
+  "skill_name": "literature-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "basic_literature_review_with_pdf",
+      "prompt": "我需要分析几篇关于人工智能在医疗领域应用的论文。我有三个 PDF 文件：paper1.pdf（深度学习方法在医学影像中的应用）、paper2.pdf（自然语言处理用于临床诊断）、paper3.pdf（AI 辅助药物发现）。请帮我生成一份综合文献综述，包括核心观点、共识与分歧、研究空白，并导出 BibTeX 格式参考文献。",
+      "expected_output": "Markdown 格式的文献综述报告，包含研究背景、核心观点摘要、交叉验证分析（共识/分歧/研究空白）、详细文档分析、参考文献部分。同时生成 BibTeX 文件。",
+      "files": ["examples/paper1.txt", "examples/paper2.txt", "examples/paper3.txt"],
+      "assertions": [
+        {
+          "name": "Output_contains_chinese",
+          "description": "输出应包含中文内容（因为输入是中文）",
+          "type": "content_check",
+          "expected": true,
+          "check": "output contains Chinese characters"
+        },
+        {
+          "name": "Has_research_background",
+          "description": "应包含研究背景部分",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '研究背景' or 'Research Background'"
+        },
+        {
+          "name": "Has_key_findings",
+          "description": "应包含核心观点摘要部分",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '核心观点' or 'Key Findings'"
+        },
+        {
+          "name": "Has_cross_verification",
+          "description": "应包含交叉验证分析（多篇文档）",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '交叉验证' or 'Cross-Verification'"
+        },
+        {
+          "name": "Has_consensus_section",
+          "description": "应包含共识观点部分",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '共识' or 'Consensus'"
+        },
+        {
+          "name": "Has_research_gaps",
+          "description": "应包含研究空白部分",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '研究空白' or 'Research Gaps'"
+        },
+        {
+          "name": "Has_references",
+          "description": "应包含参考文献部分",
+          "type": "section_check",
+          "expected": true,
+          "check": "output contains '参考文献' or 'References'"
+        },
+        {
+          "name": "Citations_proper_format",
+          "description": "引用格式应为 [Author, Year] 格式",
+          "type": "format_check",
+          "expected": true,
+          "check": "output matches pattern '\\[\\w+,\\s*\\d{4}\\]'"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "cross_verify_consensus_disagreement",
+      "prompt": "帮我分析这两篇关于量子计算研究方向的文献，识别它们的共识与分歧。文档一（quantum_paper1.txt）认为量子纠错已成熟，文档二（quantum_paper2.txt）认为量子纠错仍处于实验阶段。请明确指出观点的分歧点。",
+      "expected_output": "分析报告重点展示观点分歧，明确对比两篇文章的不同立场。",
+      "files": ["examples/quantum_paper1.txt", "examples/quantum_paper2.txt"],
+      "assertions": [
+        {
+          "name": "Identifies_disagreement",
+          "description": "应识别出观点分歧",
+          "type": "content_check",
+          "expected": true,
+          "check": "output contains '分歧' or 'disagreement' or 'conflicting'"
+        },
+        {
+          "name": "Compares_viewpoints",
+          "description": "应对比不同文档的观点",
+          "type": "content_check",
+          "expected": true,
+          "check": "output contains structure indicating comparison between sources"
+        },
+        {
+          "name": "Specific_disagreement_details",
+          "description": "分歧点应有具体细节",
+          "type": "content_check",
+          "expected": true,
+          "check": "output mentions specific disagreement details (quantum error correction maturity)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "feishu_data_integration",
+      "prompt": "我的研究数据存储在飞书多维表格中，表格 URL 是 https://open.feishu.cn/app/xxxx/baseinfo。请帮我获取数据并生成文献综述。表格中有论文标题、作者、年份、摘要等字段。",
+      "expected_output": "从飞书获取数据并生成综述报告。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Feishu_data_fetched",
+          "description": "应调用飞书数据获取功能",
+          "type": "process_check",
+          "expected": true,
+          "check": "Feishu fetcher was called"
+        },
+        {
+          "name": "Uses_fetched_data",
+          "description": "综述应使用从飞书获取的数据",
+          "type": "content_check",
+          "expected": true,
+          "check": "output contains data from Feishu (author names, titles, etc.)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "should_not_trigger_simple_read",
+      "prompt": "请帮我读取这个 PDF 文件的内容。",
+      "expected_output": "Claude 应直接读取 PDF，而不触发文献综述 skill。",
+      "files": ["examples/sample.pdf"],
+      "should_trigger": false,
+      "assertions": [
+        {
+          "name": "Simple_file_read",
+          "description": "这是简单的文件读取任务，不应触发完整综述流程",
+          "type": "behavior_check",
+          "expected": false,
+          "check": "skill was not invoked"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "should_not_trigger_different_domain",
+      "prompt": "请帮我创建一个 React 组件，用于显示用户仪表盘。",
+      "expected_output": "Claude 应创建 React 组件，不使用文献综述 skill。",
+      "files": [],
+      "should_trigger": false,
+      "assertions": [
+        {
+          "name": "Different_domain",
+          "description": "这是前端开发任务，不是文献综述",
+          "type": "domain_check",
+          "expected": false,
+          "check": "React component code generated, no literature review produced"
+        }
+      ]
+    }
+  ]
+}

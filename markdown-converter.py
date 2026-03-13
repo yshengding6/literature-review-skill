@@ -505,7 +505,7 @@ class MarkdownConverter:
                     try:
                         pdfmetrics.registerFont(TTFont(font_name, font_path))
                         registered_fonts.append(font_name)
-                    except:
+                    except (OSError, IOError, RuntimeError):
                         continue
             if registered_fonts:
                 print(f"已注册中文字体: {', '.join(registered_fonts)}")
@@ -719,7 +719,7 @@ class MarkdownConverter:
                             elements.append(Paragraph(text, bibliography_style))
                         else:
                             elements.append(Paragraph(text, body_style))
-                    except:
+                    except (ValueError, AttributeError):
                         pass
                 i += 1
 

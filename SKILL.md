@@ -1,7 +1,7 @@
 ---
 name: literature-review
 version: 2.1.0
-description: 学术级文献调研综述工具。支持 PDF 解析、交叉验证、研究空白检测、引用溯源、BibTeX 导出和飞书数据集成。
+description: 文献综述工具，用于学术研究和论文写作。支持 PDF 解析、交叉验证、研究空白检测、引用溯源、BibTeX 导出和飞书数据集成。适用于需要系统梳理多篇文献、识别共识与分歧、生成结构化综述报告的场景。
 tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex, feishu]
 author: Claude
 ---
@@ -52,6 +52,24 @@ Use this skill when you need to:
 - **Pagination**: Automatic pagination for large datasets
 - **Configurable**: Environment variable or config file authentication
 
+### Feishu Integration Example
+```bash
+# Configure Feishu credentials (set as environment variables or in config.yaml)
+export FEISHU_APP_ID="your_app_id"
+export FEISHU_APP_SECRET="your_app_secret"
+
+# Or add to config.yaml:
+feishu:
+  enabled: true
+  app_id: "your_app_id"
+  app_secret: "your_app_secret"
+
+# Use Feishu data in your review
+# The skill will automatically fetch data from your Feishu base
+```
+
+**Note**: Feishu API requires valid credentials. Configure in `config.yaml` or set as environment variables before use.
+
 ### Document Analysis
 - **Formats Supported**: TXT, PDF (with pypdf), MD, code files
 - **Encoding Support**: UTF-8, GBK, Latin-1 (automatic detection)
@@ -67,6 +85,7 @@ Use this skill when you need to:
 - **Markdown Review**: Comprehensive report with citations
 - **BibTeX File**: Zotero/LaTeX compatible references
 - **Multi-Language**: Support for Chinese (zh) and English (en) output
+- **Web Search Note**: Currently uses mock implementation. For real search functionality, integrate with Google Search API, Bing API, or configure in `config.yaml`.
 
 ## Input Parameters
 
@@ -139,6 +158,82 @@ analysis:
   max_key_points: 15
   extract_research_gaps: true
 ```
+
+## Usage Examples
+
+### Example 1: Basic Literature Review
+
+Generate a comprehensive review from three local documents:
+
+```bash
+python main.py --topic "人工智能在医疗领域的应用" \
+  --files examples/paper1.txt examples/paper2.txt examples/paper3.txt \
+  --lang zh
+```
+
+**Output**:
+- `人工智能在医疗领域的应用_综述.md` - Comprehensive review with background, findings, consensus, gaps
+- `人工智能在医疗领域的应用_references.bib` - BibTeX references for Zotero/LaTeX
+
+### Example 2: Cross-Verification Analysis
+
+Analyze consensus and disagreements across multiple papers:
+
+```bash
+python main.py --topic "量子计算研究方向" \
+  --files examples/quantum_paper1.txt examples/quantum_paper2.txt \
+  --lang zh
+```
+
+**Output**:
+- Review with explicit consensus/disagreement sections
+- Comparison of viewpoints with source attribution
+
+### Example 3: Simple File Read (Fast Mode)
+
+Just read file contents without full analysis:
+
+```bash
+python main.py --topic "读取文件" \
+  --files examples/sample.txt \
+  --simple-read
+```
+
+**Output**:
+- Basic file information only (type, summary, author, year)
+- Faster processing for large files
+
+### Example 4: English Review with BibTeX Export
+
+Generate English review from PDF documents:
+
+```bash
+python main.py --topic "Deep Learning in Computer Vision" \
+  --files docs/cv_paper1.pdf docs/cv_paper2.pdf \
+  --lang en --output-bibtex
+```
+
+### Example 5: Disable Web Search
+
+Use only local documents without web search:
+
+```bash
+python main.py --topic "区块链技术应用" \
+  --files examples/blockchain_papers/ \
+  --no-web
+```
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## Dependencies
+
+- `fastmcp>=0.10.0` - MCP framework
+- `httpx>=0.27.0` - HTTP client
+- `pypdf>=4.0.0` - PDF parsing
 
 ## Installation
 
