@@ -1,6 +1,6 @@
 ---
 name: literature-review
-version: 2.1.0
+version: 2.2.1
 description: 文献综述工具，用于学术研究和论文写作。支持 PDF 解析、交叉验证、研究空白检测、引用溯源、BibTeX 导出和飞书数据集成。适用于需要系统梳理多篇文献、识别共识与分歧、生成结构化综述报告的场景。
 tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex, feishu]
 author: Claude
