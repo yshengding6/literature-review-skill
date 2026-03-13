@@ -134,10 +134,18 @@ class DocumentAnalyzer:
 
     def __init__(self):
         self.sections = defaultdict(list)
+        # 改进的引用提取模式，支持更多格式
         self.citation_patterns = [
+            # 标准学术格式：Author, Year
             r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*,\s*\d{4})',  # Smith, 2023
             r'\((\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*,\s*\d{4})\)',  # (Smith, 2023)
+            # et al. 格式：Author et al., Year
             r'(\b[A-Z][a-z]+\s+et\s+al\.?\s*,\s*\d{4})',  # et al., 2023
+            # 带页码格式：Author, Year, p. N
+            r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*,\s*\d{4}\s*,\s*p\.\s*\d+\s*)',  # Smith, 2023, p. 25
+            # 中文格式：作者[年份]
+            r'([\u4e00-\u9fa5]+)\[(\d{4})\]',  # 张[2023]
+            r'([\u4e00-\u9fa5]+)\[(\d{4})\s*,\s*p\.\s*\d+\s*)\]',  # 张[2023], p. 25
         ]
 
     def extract_text_from_file(self, file_path: Path) -> str:
@@ -224,6 +232,19 @@ class DocumentAnalyzer:
                 if len(parts) >= 2:
                     citation.author = parts[0].strip()
                     citation.year = parts[1].strip()
+
+        # 尝试中文引用格式：作者[年份]
+        chinese_citation_pattern = r'([\u4e00-\u9fa5]+)\[(\d{4})\]'
+        chinese_matches = re.findall(chinese_citation_pattern, text)
+        if chinese_matches:
+            # 使用中文引用格式
+            match = chinese_matches[0]
+            if isinstance(match, tuple):
+                match = match[0]
+            citation.author = match.group(1)
+            citation.year = match.group(2)
+            # 中文引用优先于英文引用
+            logger.debug(f"检测到中文引用: {citation.author}[{citation.year}]")
 
         # 尝试提取标题（假设第一行是标题）
         lines = text.split('\n')
@@ -849,6 +870,25 @@ if MCP_AVAILABLE and mcp:
         Returns:
             Markdown 格式的综述报告
         """
+        # 输入验证
+        if not topic or not topic.strip():
+            raise ValueError("研究主题不能为空")
+        if search_depth not in ["basic", "medium", "deep"]:
+            raise ValueError(f"search_depth 必须是 'basic'、'medium' 或 'deep'，当前值为: {search_depth}")
+        if language not in ["zh", "en"]:
+            raise ValueError(f"language 必须是 'zh' 或 'en'，当前值为: {language}")
+        if files:
+            valid_extensions = {".txt", ".md", ".pdf", ".py", ".js", ".json", ".csv"}
+            for file_path in files:
+                path = Path(file_path)
+                if not path.exists():
+                    logger.warning(f"文件不存在: {file_path}")
+                    continue
+                if path.suffix.lower() not in valid_extensions:
+                    logger.warning(f"不支持的文件类型: {file_path}")
+                    continue
+        logger.info(f"输入验证通过: 主题='{topic}', 文件数={len(files) if files else 0}, 语言={language}, 搜索深度={search_depth}")
+
         generator = ReviewGenerator(language=language)
         try:
             review, bibtex_path = generator.generate_review(
