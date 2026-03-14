@@ -1,10 +1,31 @@
-# Core dependencies for literature review skill
+# Literature Review Skill - Complete Dependencies
+# Python version: 3.8+
+
+# === Core MCP/Server Dependencies ===
 fastmcp>=0.10.0
 httpx>=0.27.0
 
-# PDF parsing (pdfplumber for better CJK support, pypdf as fallback)
+# === Configuration ===
+pyyaml>=6.0
+
+# === PDF Parsing ===
+# pdfplumber for better CJK (Chinese/Japanese/Korean) support
 pdfplumber>=0.7.0
+# pypdf as fallback parser
 pypdf>=4.0.0
 
-# Optional dependencies for enhanced features
-# marker-pdf>=0.2.5  # Alternative PDF parser (uncomment to use)
+# === Markdown & Document Conversion ===
+markdown>=3.5
+python-docx>=0.8.11
+
+# === PDF Generation ===
+# ReportLab for PDF generation (primary method)
+reportlab>=4.0.0
+# WeasyPrint for alternative PDF generation with better HTML/CSS support (optional)
+# Uncomment the line below to enable WeasyPrint
+# weasyprint>=59.0
+
+# === Additional Utilities ===
+# Optional: Better PDF parsing with marker (alternative to pdfplumber)
+# Uncomment the line below to use marker-pdf
+# marker-pdf>=0.2.5

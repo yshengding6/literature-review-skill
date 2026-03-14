@@ -1,30 +1,38 @@
-# Literature Review Skill (Enhanced Edition)
+# Literature Review Agent | 文献综述智能体
 
-A professional-grade tool for academic research, supporting document analysis, cross-verification, and comprehensive literature review generation.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-## Features
+## English / [中文](#中文说明)
 
-### Core Capabilities
-- [x] **Document Analysis** - Analyze multiple document formats (TXT, PDF)
-- [x] **Cross-Verification** - Identify consensus and disagreements across papers
-- [x] **Research Gap Detection** - Automatically detect research gaps and limitations
-- [x] **Source Tracing** - Strict citation format [Author, Year, Page] to prevent hallucinations
-- [x] **Web Search** - Integrate with web resources (**Note: Currently mock implementation only**)
-   > The web search functionality returns simulated results. For real search functionality, integrate with Google Search API, Bing API, or other search services and configure in `config.yaml`.
+---
 
-### Advanced Features
-- [x] **PDF Parsing** - Support for academic PDF papers with pypdf
-- [x] **BibTeX Export** - Generate Zotero/LaTeX compatible references
-- [x] **Multi-Language** - Support for Chinese and English output
-- [x] **Windows Compatible** - Full Windows path and encoding support
+## English
 
-## Installation
+**A professional AI agent for academic literature review featuring Analects-level deep analysis and Feishu Bitable integration.**
 
-### Prerequisites
-- Python 3.8 or higher
-- pip package manager
+This intelligent agent helps researchers systematically analyze academic papers, identify consensus and disagreements across sources, detect research gaps, and generate comprehensive literature reviews with strict citation standards.
 
-### Quick Install
+### Key Features
+
+#### 🔬 Analects-Level Deep Analysis
+- **Cross-Verification System**: Identify consensus views and conflicting opinions across multiple papers
+- **Research Gap Detection**: Automatically detect limitations, unanswered questions, and future research directions
+- **Thematic Analysis**: Extract key themes with frequency analysis and confidence scoring
+- **Strict Citation Format**: Enforces `[Author, Year, Page]` format to prevent AI hallucinations
+
+#### 📊 Multi-Source Integration
+- **Local PDF Mode**: Analyze PDF, TXT, MD files with advanced parsing
+- **Feishu Bitable Mode**: Direct integration with Feishu/Lark multidimensional tables for collaborative research
+- **Web Search**: Fetch literature from online sources (API integration ready)
+
+#### 🌐 Bilingual Support
+- Full Chinese/English output support
+- CJK (Chinese/Japanese/Korean) character handling in PDF parsing
+- Academic formatting for both languages
+
+### Installation
 
 ```bash
 # Clone the repository
@@ -35,272 +43,328 @@ cd literature-review-skill
 pip install -r requirements.txt
 ```
 
-### Windows Quick Start
+### Usage
 
-For Windows users, follow these steps:
+#### Local PDF Mode
 
-1. **Install Python** from https://python.org (include pip in installation)
-
-2. **Open Command Prompt** or PowerShell:
-
-```cmd
-# Navigate to the project directory
-cd D:\path\to\literature-review-skill
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-3. **Run the tool**:
-
-```cmd
-# Basic usage
-python main.py --topic "Artificial Intelligence in Healthcare" --files doc1.txt doc2.pdf
-
-# With options
-python main.py --topic "AI in Healthcare" --files doc1.txt doc2.pdf --lang en --depth deep
-
-# Disable BibTeX export
-python main.py --topic "AI Research" --files doc1.txt --no-bibtex
-```
-
-## Usage
-
-### Command Line Interface
+Analyze documents stored locally on your computer:
 
 ```bash
-# Basic review generation
-python main.py --topic "<research_topic>" --files file1.txt file2.pdf
+# Basic review with local files
+python main.py --topic "Artificial Intelligence in Healthcare" \
+  --files doc1.pdf doc2.txt doc3.pdf
 
-# With language selection (zh/en)
-python main.py --topic "<topic>" --lang en --files file1.txt
-
-# With search depth (basic/medium/deep)
-python main.py --topic "<topic>" --depth deep --files file1.txt
-
-# Disable web search
-python main.py --topic "<topic>" --no-web --files file1.txt
-
-# Disable BibTeX export
-python main.py --topic "<topic>" --no-bibtex --files file1.txt
+# English output
+python main.py --topic "Deep Learning Applications" \
+  --files paper1.pdf paper2.pdf \
+  --lang en --depth deep
 ```
 
-### Parameters
+**Supported Formats**: PDF, TXT, MD, DOCX
 
-| Parameter | Type | Default | Description |
-|-----------|--------|----------|-------------|
-| `--topic` | string | Required | Research topic |
-| `--files` | list | Optional | Local document file paths |
-| `--lang` | string | zh | Output language (zh/en) |
-| `--depth` | string | medium | Web search depth (basic/medium/deep) |
-| `--no-web` | flag | False | Disable web search |
-| `--no-bibtex` | flag | False | Disable BibTeX export |
+#### Feishu Bitable Mode
 
-### As MCP Server
+Leverage collaborative research data from Feishu multidimensional tables:
+
+```bash
+# Step 1: Set up Feishu credentials
+# Option A: Via environment variables
+export FEISHU_APP_ID="cli_xxxxxxxx"
+export FEISHU_APP_SECRET="your_app_secret"
+
+# Option B: Via config.yaml
+# Copy config.example.yaml to config.yaml and fill in credentials
+
+# Step 2: Enable Feishu in config.yaml
+feishu:
+  enabled: true
+
+# Step 3: Run MCP server mode
+python main.py
+```
+
+**Feishu Integration Features**:
+- Fetch records from Feishu bases and spreadsheets
+- Parse URLs automatically (baseinfo, tables, spreadsheets)
+- Paginated data fetching for large datasets
+- Retry mechanism with exponential backoff
+
+### MCP Server Mode
+
+Run as a Model Context Protocol server for seamless AI integration:
 
 ```bash
 python main.py
 ```
 
-## Output
+The server exposes the following tools:
+- `generate_literature_review` - Generate comprehensive literature review
+- `analyze_document` - Analyze single document
+- `cross_verify_documents` - Cross-verify multiple documents
+- `fetch_feishu_data` - Fetch data from Feishu Bitable
+- `list_feishu_tables` - List tables in Feishu base
 
-### Markdown Review Report
+### Configuration
 
-The tool generates a comprehensive Markdown report including:
-
-1. **Research Background** - Context and objectives
-2. **Source Description** - List of analyzed documents
-3. **Key Findings** - Key points with citations [Author, Year]
-4. **Cross-Verification Analysis**:
-   - Consensus Views - Agreements across sources
-   - Conflicting Views - Disagreements identified
-   - Research Gaps - Limitations and future directions
-5. **Detailed Analysis** - Per-document breakdown
-6. **References** - Formatted bibliography
-
-### BibTeX File
-
-Automatically generates `<topic>_references.bib` with Zotero/LaTeX compatible format:
-
-```bibtex
-@misc{ref1,
-  author = {Smith, John},
-  title = {Artificial Intelligence in Healthcare},
-  year = {2024},
-  note = {paper.pdf}
-}
-```
-
-## Configuration
-
-### Optional: config.yaml
-
-Create a `config.yaml` file for custom settings:
+Create `config.yaml` from `config.example.yaml`:
 
 ```yaml
-# API Configuration
-web_search:
-  enabled: true
-  api_key: ""  # For Google/Bing Search API
-  provider: "mock"  # mock/google/bing
-
-# Output Settings
-output:
-  language: "zh"  # zh or en
-  generate_bibtex: true
-  output_dir: "."
+# Feishu Integration
+feishu:
+  enabled: false  # Set to true to enable
+  app_id: "cli_xxxxxxxx"
+  app_secret: "your_app_secret"
+  api_base_url: "https://open.feishu.cn/open-apis"
+  timeout: 30
 
 # Analysis Settings
 analysis:
-  similarity_threshold: 0.7  # For cross-verification
+  similarity_threshold: 0.7
   max_key_points: 15
-  extract_research_gaps: true
+  max_consensus: 8
+  max_disagreements: 8
+  max_research_gaps: 10
+  detailed_analysis: true
+
+# Output Settings
+output:
+  default_language: zh  # zh or en
+  generate_bibtex: true
+  output_dir: "./output"
 ```
 
-## Examples
+### Output Format
 
-### Example 1: Basic Review
+The agent generates:
 
-```bash
-python main.py --topic "Machine Learning in Finance" --files examples/sample_document.txt
-```
+1. **Markdown Review Report** (`{topic}_综述.md` / `{topic}_Review.md`)
+   - Research background and objectives
+   - Source description
+   - Key findings with citations
+   - Cross-verification analysis (consensus, disagreements, gaps)
+   - Detailed per-document analysis
+   - Formatted references
 
-Output:
-- `Machine_Learning_in_Finance_综述.md` (Chinese)
-- `Machine_Learning_in_Finance_references.bib`
+2. **BibTeX File** (`{topic}_references.bib`)
+   - Zotero/LaTeX compatible format
+   - Strict citation standards
 
-### Example 2: English Output
+3. **Log File** (`literature_review.log`)
+   - Detailed processing logs for debugging
 
-```bash
-python main.py --topic "Deep Learning" --lang en --files doc1.pdf doc2.txt
-```
-
-Output:
-- `Deep_Learning_Review.md` (English)
-- `Deep_Learning_references.bib`
-
-### Example 3: Cross-Verification Only
-
-When you have multiple documents and want to analyze consensus:
-
-```bash
-python main.py --topic "AI Ethics" --files paper1.txt paper2.txt paper3.pdf
-```
-
-The review will include a "Cross-Verification Analysis" section showing:
-- Views supported by multiple sources (Consensus)
-- Conflicting opinions across sources (Disagreements)
-- Combined research gaps across all papers
-
-## Document Formats Supported
+### Document Formats Supported
 
 | Format | Extension | Notes |
 |---------|------------|--------|
-| Plain Text | .txt | UTF-8, GBK, Latin-1 encoding support |
-| PDF | .pdf | Requires `pypdf` package |
-| Markdown | .md | Read as plain text |
-| Code files | .py, .js, etc. | Read as plain text |
+| PDF | .pdf | CJK character support |
+| Plain Text | .txt | UTF-8, GBK, Latin-1 |
+| Markdown | .md | Direct parsing |
+| Code Files | .py, .js, .json | Plain text mode |
 
-## Citation Format
+### Examples
 
-The tool enforces strict citation format: `[Author, Year]`
+See the `examples/` directory for sample documents:
+- `sample_document.txt` - Basic text example
+- `sample_document2.txt` - Extended example
+- `quantum_paper1.txt` - Quantum computing example
 
-This format:
-- Prevents AI hallucinations by requiring source attribution
-- Is compatible with academic writing standards
-- Links to BibTeX entries for proper references
-
-## Troubleshooting
-
-### Windows Encoding Issues
-
-If you see encoding errors:
-
-```cmd
-chcp 65001
-set PYTHONIOENCODING=utf-8
-python main.py --topic "Your Topic" --files doc.txt
-```
-
-### PDF Parsing Errors
-
-For better PDF parsing (especially multi-column layouts):
-
-1. Install `marker-pdf`:
-```cmd
-pip install marker-pdf
-```
-
-2. Uncomment the line in `main.py`:
-```python
-# from pypdf import PdfReader  # Comment this
-from marker_pdf import convert_pdf  # Uncomment this
-```
-
-### Empty Directory Error
-
-If you get "No files found" error:
-- Ensure file paths are correct
-- Use full paths, not relative paths
-- On Windows, use forward slashes or escape backslashes
-
-## Development
-
-### Running Tests
-
-```bash
-# Run all tests
-python tests/test_analyzer.py
-
-# Run specific test
-python -m pytest tests/ -v
-```
-
-### Project Structure
-
-```
-literature-review-skill/
-├── main.py              # Core implementation
-├── requirements.txt       # Python dependencies
-├── README.md             # This file
-├── config.yaml.example   # Configuration template
-├── examples/             # Example documents
-│   ├── sample_document.txt
-│   └── sample_document2.txt
-└── tests/               # Unit tests
-    └── test_analyzer.py
-```
-
-## License
-
-MIT License - feel free to use and modify for your research needs.
-
-## Contributing
+### Contributing
 
 Contributions are welcome! Please:
 1. Fork the repository
 2. Create a feature branch
 3. Submit a pull request
 
-## Acknowledgments
+### License
+
+MIT License - see [LICENSE](LICENSE) for details
+
+---
+
+## 中文说明
+
+**学术文献综述智能体：具备《论语》级深度分析与飞书多维表格集成的专业研究助手。**
+
+本智能体帮助研究人员系统分析学术论文，识别多篇文献间的共识与分歧，检测研究空白，并生成符合严格引用标准的综合文献综述。
+
+### 核心特性
+
+#### 🔬 《论语》级深度分析
+- **交叉验证系统**：识别多篇文献中的共识观点与分歧
+- **研究空白检测**：自动发现局限性、未解决问题及未来研究方向
+- **主题分析**：提取关键主题并进行频率分析与置信度评分
+- **严格引用格式**：强制 `[作者, 年份, 页码]` 格式，防止 AI 幻觉
+
+#### 📊 多源集成
+- **本地 PDF 模式**：分析本地存储的 PDF、TXT、MD 文件
+- **飞书多维表格模式**：直接集成飞书/ Lark 多维表格进行协作研究
+- **网络搜索**：从在线来源获取文献（API 接入就绪）
+
+#### 🌐 双语支持
+- 完整的中英文输出支持
+- PDF 解析中的 CJK（中日韩）字符处理
+- 两种语言的学术格式规范
+
+### 安装
+
+```bash
+# 克隆仓库
+git clone https://github.com/yshengding6/literature-review-skill.git
+cd literature-review-skill
+
+# 安装依赖
+pip install -r requirements.txt
+```
+
+### 使用方法
+
+#### 本地 PDF 模式
+
+分析本地存储的文档：
+
+```bash
+# 基本综述（本地文件）
+python main.py --topic "人工智能在医疗中的应用" \
+  --files doc1.pdf doc2.txt doc3.pdf
+
+# 英文输出
+python main.py --topic "深度学习应用" \
+  --files paper1.pdf paper2.pdf \
+  --lang en --depth deep
+```
+
+**支持的格式**：PDF, TXT, MD, DOCX
+
+#### 飞书多维表格模式
+
+利用飞书多维表格的协作研究数据：
+
+```bash
+# 步骤 1：设置飞书凭证
+# 选项 A：通过环境变量
+export FEISHU_APP_ID="cli_xxxxxxxx"
+export FEISHU_APP_SECRET="your_app_secret"
+
+# 选项 B：通过 config.yaml
+# 复制 config.example.yaml 为 config.yaml 并填写凭证
+
+# 步骤 2：在 config.yaml 中启用飞书
+feishu:
+  enabled: true
+
+# 步骤 3：运行 MCP 服务器模式
+python main.py
+```
+
+**飞书集成功能**：
+- 从飞书多维表格和电子表格获取记录
+- 自动解析 URL（baseinfo、表格、电子表格）
+- 大数据集的分页获取
+- 指数退避重试机制
+
+### MCP 服务器模式
+
+作为模型上下文协议服务器运行，实现无缝 AI 集成：
+
+```bash
+python main.py
+```
+
+服务器提供以下工具：
+- `generate_literature_review` - 生成综合文献综述
+- `analyze_document` - 分析单个文档
+- `cross_verify_documents` - 交叉验证多个文档
+- `fetch_feishu_data` - 从飞书多维表格获取数据
+- `list_feishu_tables` - 列出飞书多维表格中的表
+
+### 配置
+
+从 `config.example.yaml` 创建 `config.yaml`：
+
+```yaml
+# 飞书集成
+feishu:
+  enabled: false  # 设置为 true 以启用
+  app_id: "cli_xxxxxxxx"
+  app_secret: "your_app_secret"
+  api_base_url: "https://open.feishu.cn/open-apis"
+  timeout: 30
+
+# 分析设置
+analysis:
+  similarity_threshold: 0.7
+  max_key_points: 15
+  max_consensus: 8
+  max_disagreements: 8
+  max_research_gaps: 10
+  detailed_analysis: true
+
+# 输出设置
+output:
+  default_language: zh  # zh 或 en
+  generate_bibtex: true
+  output_dir: "./output"
+```
+
+### 输出格式
+
+智能体生成：
+
+1. **Markdown 综述报告** (`{topic}_综述.md` / `{topic}_Review.md`)
+   - 研究背景与目标
+   - 资料来源说明
+   - 带引用的核心观点
+   - 交叉验证分析（共识、分歧、空白）
+   - 详细文档分析
+   - 格式化参考文献
+
+2. **BibTeX 文件** (`{topic}_references.bib`)
+   - Zotero/LaTeX 兼容格式
+   - 严格引用标准
+
+3. **日志文件** (`literature_review.log`)
+   - 详细处理日志用于调试
+
+### 支持的文档格式
+
+| 格式 | 扩展名 | 说明 |
+|---------|------------|--------|
+| PDF | .pdf | CJK 字符支持 |
+| 纯文本 | .txt | UTF-8, GBK, Latin-1 |
+| Markdown | .md | 直接解析 |
+| 代码文件 | .py, .js, .json | 纯文本模式 |
+
+### 示例
+
+查看 `examples/` 目录中的示例文档：
+- `sample_document.txt` - 基本文本示例
+- `sample_document2.txt` - 扩展示例
+- `quantum_paper1.txt` - 量子计算示例
+
+### 贡献
+
+欢迎贡献！请：
+1. Fork 仓库
+2. 创建功能分支
+3. 提交 Pull Request
+
+### 许可证
+
+MIT 许可证 - 详情请参阅 [LICENSE](LICENSE)
+
+---
+
+## Acknowledgments / 致谢
 
 Built with:
-- `fastmcp` - MCP framework
-- `pypdf` - PDF parsing
-- Standard Python libraries for text processing
+- `fastmcp` - MCP 框架
+- `httpx` - HTTP 客户端
+- `pdfplumber` / `pypdf` - PDF 解析
+- `reportlab` - PDF 生成
+- `python-docx` - DOCX 生成
+- `pyyaml` - YAML 配置
 
-## Version History
+## Contact / 联系
 
-### v2.0 (Enhanced Edition)
-- Added cross-verification for consensus/disagreement
-- Added research gap detection
-- Added strict citation format with source tracing
-- Added PDF parsing support
-- Added BibTeX export for Zotero/LaTeX
-- Added multi-language support (zh/en)
-- Improved Windows compatibility
-
-### v1.0
-- Initial release with basic document analysis
-- Mock web search functionality
-- Markdown review generation
+- GitHub: [yshengding6](https://github.com/yshengding6)
+- Issues: [Report Issues](https://github.com/yshengding6/literature-review-skill/issues)
