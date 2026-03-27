@@ -1,248 +1,307 @@
 ---
 name: literature-review
-version: 2.2.1
-description: 文献综述工具，用于学术研究和论文写作。支持 PDF 解析、交叉验证、研究空白检测、引用溯源、BibTeX 导出和飞书数据集成。适用于需要系统梳理多篇文献、识别共识与分歧、生成结构化综述报告的场景。
-tags: [research, documentation, analysis, review, academic, cross-verification, pdf, bibtex, feishu]
+version: 3.0.0
+description: 中国传统文献综述工具（苏格拉底圆桌版）。通过政治史还原、注疏六维解剖、文本异常检测、变量替换实验四种硬核方法论，对古文典籍进行深度学术分析。内置交互式检查点机制与动态圆桌会议系统，强制要求学术立场对立碰撞，输出带证据分级的结构化综述。用于《论语》等经史典籍的学术史重构、争议焦点挖掘与冷知识命题生成。
+tags: [research, classical-chinese, literature-review, confucianism, political-history, anomaly-detection, socratic-method, academic-analysis, cross-verification, evidence-grading]
 author: Claude
 ---
 
-# Literature Review Skill (Enhanced Edition)
+# Literature Review Skill v3.0.0 — Socratic Roundtable (苏格拉底圆桌版)
 
-A professional-grade tool for academic research that supports document analysis, cross-verification, and comprehensive literature review generation.
+> **代号**: Socratic Roundtable
+> **适用场景**: 【老丁读书】专栏 · 经典章句学术史重构
+> **核心目标**: 通过硬核方法论重建某一章句的学术史结构，呈现争议焦点、政治动机、解释路径与冷知识命题
 
-## New Features (v2.1)
+---
 
-### Feishu Integration
-- [x] **Feishu Data Fetching** - Fetch data from Feishu bases/spreadsheets for literature review
+## 一、方法论：深度研究的"四把手术刀"
 
-### New Features (v2.0)
+v3.0 版本**强制要求** AI 放弃平庸的道德感悟，必须通过以下四种硬核逻辑路径进行推演：
 
-### Logic Enhancement
-- [x] **Cross-Verification** - Identify consensus and disagreements across multiple papers
-- [x] **Research Gap Detection** - Automatically detect research gaps and limitations in each review
-- [x] **Source Tracing** - Enforce strict citation format [Author, Year, Page] to prevent AI hallucinations
+### 🔪 1. 政治史视角探针 (Political History Probe)
 
-### Tooling & Compatibility
-- [x] **PDF Parsing** - Integrated pypdf for better handling of multi-column academic layouts
-- [x] **BibTeX Support** - Automatically generate references.bib file for Zotero/LaTeX
-- [x] **Windows Compatible** - All file I/O operations use encoding='utf-8' and pathlib for cross-platform handling
+**【核心新增】**将文本还原为春秋时代的权力博弈。关注利益分配、政治避险与合法性构建，剥离后世的道德化滤镜。
 
-### Documentation
-- [x] **README.md** - Updated with Quick Start guide for Windows users
-- [x] **config.yaml.example** - Configuration template for API keys and default output languages (supports zh/en)
+执行规则：
+- **权力位阶**：识别涉及的各方利益主体，分析其权力平衡点
+- **动机核算**：按此言论行动，谁获益（政治资本）？谁受损？是否存在避险策略？
+- **礼制工具化**：文中"礼/德"是在维护谁的既得利益？是防御武器还是合法性屏障？
+- **现场还原**：结合相关人物（如三桓、公室）当时的真实处境，推测言论的"即时指向性"
 
-### Testing
-- [x] **Unit Tests** - Added tests for PDF text extraction, citation extraction, and error handling
+### 🔪 2. 注疏六维解剖 (6-Dimension Deconstruction)
 
-## Usage Scenarios
+将历代注疏视为"解释机器"，拆解其六个维度：
+1. **文本解释**：该注疏对原文的表层理解是什么？
+2. **方法论**：采用了什么解释方法？（训诂、义理、考据、玄学……）
+3. **概念重构**：是否对原文概念进行了重新定义或挪用？
+4. **立场假设**：该注疏预设了怎样的政治/哲学立场？
+5. **隐含前提**：哪些前提被默认接受但从未声明？
+6. **时代动机**：该解释在其历史语境中服务于什么目的？
 
-Use this skill when you need to:
-- Conduct academic literature reviews
-- Analyze multiple papers and identify consensus/disagreement
-- Detect research gaps across sources
-- Generate properly formatted citations and BibTeX files
-- Analyze PDF academic papers
-- Work in Chinese or English
+### 🔪 3. 文本异常检测 (Anomaly Detection)
 
-## Capabilities
+扫描语言结构中"并非必须但被刻意保留"的词汇，寻找逻辑断裂处，作为"冷知识"的突破口。
 
-### Feishu Integration
-- **Data Fetching**: Fetch records from Feishu bases and tables
-- **URL Parsing**: Support for Feishu baseinfo and spreadsheet URLs
-- **Pagination**: Automatic pagination for large datasets
-- **Configurable**: Environment variable or config file authentication
+检测规则：
+- 标记"赘词"——那些在语法上可以省略但被刻意保留的字
+- 标记"矛盾词"——同一语境中语义方向不一致的用词
+- 标记"沉默区"——逻辑上应当出现但缺席的概念
+- 这些异常点是冷知识命题的高概率来源
 
-### Feishu Integration Example
-```bash
-# Configure Feishu credentials (set as environment variables or in config.yaml)
-export FEISHU_APP_ID="your_app_id"
-export FEISHU_APP_SECRET="your_app_secret"
+### 🔪 4. 变量替换实验 (Counterfactual Testing)
 
-# Or add to config.yaml:
-feishu:
-  enabled: true
-  app_id: "your_app_id"
-  app_secret: "your_app_secret"
+对文本执行最小化替换实验，通过"语义塌陷"反证原意图的唯一性：
+- **换动词**：将核心动词替换为近义词，观察语义是否崩塌
+- **换对象**：将动作对象替换为其他主体，观察逻辑是否成立
+- **换时间**：将时间状语前移或后移，观察政治含义是否改变
+- **塌陷判定**：如果替换后语义发生重大偏移，说明原词选择具有不可替代的指向性
 
-# Use Feishu data in your review
-# The skill will automatically fetch data from your Feishu base
+---
+
+## 二、交互式标准工作流 (Workflow)
+
+本版本引入**检查点交互机制**，确保研究路径不偏离学术严谨性。
+
+### 阶段 1：原子化扫描（考据层）
+
+**任务**：执行字词校释、异文校勘，建立物理事实基础。
+
+- 对目标章句进行逐字训诂
+- 列出关键异文（不同版本系统的文字差异）
+- 标注底本与校本信息
+- 运行**文本异常检测**，列出异常点清单
+
+⏸️ **检查点 A**：暂停，向用户展示基础事实清单，等待用户确认或修正。
+
+### 阶段 2：深度挖掘与政治还原（动机层）
+
+**任务**：运行"政治史探针"，还原历史现场。
+
+- 执行**政治史视角探针**，分析权力博弈结构
+- 关联《论语》内部其他章节进行互文检索
+- 关联经史典籍（《左传》《国语》《史记》等）验证历史背景
+- 识别话语权陷阱——哪些解释可能是在服务特定政治叙事
+- 运行**注疏六维解剖**，拆解2-3个代表性注疏
+
+⏸️ **（此阶段完成后自动进入阶段 3 的角色筹备）**
+
+### 阶段 3：冲突驱动型动态圆桌（论辩层）
+
+**任务**：召开圆桌会议，强制学术立场对立碰撞。
+
+**角色点将规则**：
+- 从资料中自动识别 **6 位**代表学者
+- **强制规则**：必须包含至少**两组学术立场互为"天敌"**的角色（如汉学 vs 宋学、考据派 vs 义理派）
+- **固定席位**：苏格拉底（Socrates）作为第 7 位参会者
+
+**圆桌议程**：
+1. 各学者依次发言，须引用原文或核心立场进行"硬碰撞"
+2. 苏格拉底不表达立场，仅使用**助产术**（elenchus）进行逻辑清洗
+3. 苏格拉底针对论证中的"概念偷换"或"时代错置"，提出**3 个致命反问**
+4. 重点追问：**"这个解释是为了掩盖什么政治尴尬？"**
+
+⏸️ **检查点 B**：暂停，向用户展示角色阵容与核心争议点，等待用户确认或调整阵容。
+
+### 阶段 4：证据分级综述合成（输出层）
+
+**任务**：整合辩论结果，生成结构化文献综述。
+
+执行规则：
+1. **[实证]**：明确来自用户笔记或古籍原文的内容，标注出处
+2. **[推论]**：基于学派立场由 AI 模拟的可能观点，必须标注"基于 X 学派立场推测"
+3. **[缺失]**：明确指出该问题在现有资料中缺乏直接证据
+
+**老丁因子 (The Non-Consensus Factor)**：
+- 强制寻找一个"非共识"观察点
+- **异见捕捉器**：总结历代主流注疏中被共同忽略、或逻辑上存在疑点的细节
+- **冷知识命题**：生成一句判断性结论（格式：**X 并不是 Y，而是 Z**），须违背常见理解，但可被文本与逻辑支持
+
+### 阶段 5：多格式生成
+
+**任务**：按需输出最终综述。
+
+支持格式：
+- **Markdown** (`.md`) — 默认输出，结构化、可读性强
+- **PDF** (`.pdf`) — 学术排版，支持标准脚注格式
+- **Word** (`.docx`) — 可编辑，支持批注修订
+
+输出结构：
+1. 核心争议界定
+2. 版本与异文说明
+3. 政治史还原分析
+4. 注疏六维解剖结果
+5. 文本异常检测报告
+6. 变量替换实验记录
+7. 圆桌会议实录（精简版）
+8. 证据分级综述正文
+9. 冷知识命题与异见捕捉
+10. 参考文献
+
+---
+
+## 三、v3.0 核心指令集 (Core Prompts)
+
+### 指令 1：政治史视角探针
+
+```
+# Role: 权力逻辑分析师
+# Task: 文本的政治史还原
+
+请针对当前章节执行"去道德化"扫描：
+
+1. 权力位阶：识别涉及的各方利益主体，分析其权力平衡点。
+2. 动机核算：按此言论行动，谁获益（政治资本）？谁受损？是否存在避险策略？
+3. 礼制工具化：文中"礼/德"是在维护谁的既得利益？是防御武器还是合法性屏障？
+4. 现场还原：结合相关人物（如三桓、公室）当时的真实处境，推测言论的"即时指向性"。
 ```
 
-**Note**: Feishu API requires valid credentials. Configure in `config.yaml` or set as environment variables before use.
+### 指令 2：动态圆桌会议 (Socratic Edition)
 
-### Document Analysis
-- **Formats Supported**: TXT, PDF (with pypdf), MD, code files
-- **Encoding Support**: UTF-8, GBK, Latin-1 (automatic detection)
-- **Citation Extraction**: Automatically extracts author, year, and title
-- **Research Gap Detection**: Identifies limitations and future work needed
+```
+# Role: 圆桌会议主持人（苏格拉底）
+# Mechanism:
 
-### Cross-Verification
-- **Consensus Detection**: Finds views supported by multiple sources (with similarity threshold)
-- **Disagreement Detection**: Identifies conflicting opinions across papers
-- **Research Gap Aggregation**: Combines gaps from all documents
+1. 冲突点将：从资料中识别 6 位代表学者。强制规则：必须包含至少两组学术立场互为"天敌"的角色。
 
-### Output Generation
-- **Markdown Review**: Comprehensive report with citations
-- **BibTeX File**: Zotero/LaTeX compatible references
-- **Multi-Language**: Support for Chinese (zh) and English (en) output
-- **Web Search Note**: Currently uses mock implementation. For real search functionality, integrate with Google Search API, Bing API, or configure in `config.yaml`.
+2. 角色对垒：
+   - [席位 1-6]: 历史学者代表，必须引用原文或核心立场进行硬碰撞。
+   - [席位 7]: 苏格拉底（Socrates）。
 
-## Input Parameters
-
-### generate_literature_review
-- `topic` - Research topic (required)
-- `files` - Local document file paths (optional)
-- `web_search` - Enable web search (default: true)
-- `search_depth` - Search depth: basic/medium/deep (default: medium)
-- `language` - Output language: zh/en (default: zh)
-- `output_bibtex` - Generate BibTeX file (default: true)
-
-### analyze_document
-- `file_path` - Document file path (required)
-- `language` - Output language: zh/en (default: zh)
-
-### cross_verify_documents
-- `files` - List of document file paths (required)
-- `language` - Output language: zh/en (default: zh)
-
-## Output Format
-
-### Markdown Review Report Structure
-
-1. Research Background & Objectives
-2. Source Description (with statistics)
-3. Key Findings (with citations [Author, Year])
-4. Cross-Verification Analysis:
-   - Consensus Views (with source count)
-   - Conflicting Views (side-by-side comparison)
-   - Research Gaps (aggregated from all sources)
-5. Detailed Analysis (per-document breakdown)
-6. References (formatted bibliography)
-
-### BibTeX Format
-
-```bibtex
-@misc{ref1,
-  author = {Smith, John},
-  title = {Artificial Intelligence in Healthcare},
-  year = {2024},
-  note = {paper.pdf}
-}
+3. 逻辑清洗：
+   - 苏格拉底针对论证中的"概念偷换"或"时代错置"，提出 3 个致命反问。
+   - 重点追问：这个解释是为了掩盖什么政治尴尬？
 ```
 
-## Citation Format
+### 指令 3：证据分级综述协议
 
-The skill enforces strict citation format: `[Author, Year]` or `[Author, Year, Page]`
+```
+# Role: 学术综述总编辑
+# Task: 形成结构化文献综述
 
-This format:
-- Prevents AI hallucinations by requiring source attribution
-- Is compatible with academic writing standards
-- Links to BibTeX entries for proper references
-
-## Configuration
-
-Optional `config.yaml` file for custom settings:
-
-```yaml
-web_search:
-  enabled: true
-  api_key: ""
-  provider: "mock"
-
-output:
-  language: "zh"  # zh or en
-  generate_bibtex: true
-
-analysis:
-  similarity_threshold: 0.7
-  max_key_points: 15
-  extract_research_gaps: true
+1. [实证]：明确来自用户笔记或古籍原文的内容，标注出处。
+2. [推论]：基于学派立场由 AI 模拟的可能观点，必须标注"基于 X 学派立场推测"。
+3. [缺失]：明确指出该问题在现有资料中缺乏直接证据。
+4. 【异见捕捉器】：总结历代主流注疏中被共同忽略、或逻辑上存在疑点的细节。
+5. 【冷知识命题】：生成一句：违背常见理解，但可被文本与逻辑支持的判断性结论（格式：X 并不是 Y，而是 Z）。
 ```
 
-## Usage Examples
+---
 
-### Example 1: Basic Literature Review
+## 四、技术协议与版本特性
 
-Generate a comprehensive review from three local documents:
+### 版本号
+3.0.0
 
-```bash
-python main.py --topic "人工智能在医疗领域的应用" \
-  --files examples/paper1.txt examples/paper2.txt examples/paper3.txt \
-  --lang zh
+### 老丁因子 (The Non-Consensus Factor)
+强制系统在输出阶段寻找一个"非共识"观察点，确保内容的独特性。这不是"标新立异"，而是"被忽视但可被论证"的观察。
+
+### 幻觉控制
+- **严禁**混淆注者原话与 AI 解读
+- 所有注疏引用必须标注具体出处（作者、篇名、版本）
+- AI 推论必须使用 `[推论]` 标签显式声明
+
+### 格式增强
+- PDF/Docx 导出支持**标准学术脚注格式**
+- Markdown 输出支持表格、矩阵、脚注引用
+- 圆桌会议实录以对话体呈现，可独立成篇
+
+### 引用格式规范
+- 古籍注疏：`[朱熹, 四书章句集注·论语集注]`
+- 现代研究：`[钱穆, 论语新解]`
+- 清代考据：`[刘宝楠, 论语正义]`
+- 考据笔记：`[王念孙, 读书杂志]`
+
+### 禁止事项
+- 禁止使用"作者列表"替代"问题结构"
+- 禁止"学者认为……""有人指出……"等模糊表述
+- 禁止对特定学者进行价值判断
+- 禁止在文献综述中提出个人解决方案
+- 禁止混淆实证与推论
+
+---
+
+## 五、使用示例
+
+### 示例 1：论语章句深度分析
+
+用户输入：
+```
+请综述《论语·八佾》"孔子谓季氏：八佾舞于庭，是可忍也，孰不可忍也？"的学术史。
 ```
 
-**Output**:
-- `人工智能在医疗领域的应用_综述.md` - Comprehensive review with background, findings, consensus, gaps
-- `人工智能在医疗领域的应用_references.bib` - BibTeX references for Zotero/LaTeX
+系统将自动执行：
+1. 字词校释（"八佾""忍""季氏"的训诂）
+2. 政治史探针（三桓专权的权力结构、孔子的政治立场）
+3. 点将：何晏、邢昺、朱熹、刘宝楠、钱穆、李零 + 苏格拉底
+4. 圆桌辩论（汉学 vs 宋学 vs 现代考古）
+5. 生成冷知识命题
 
-### Example 2: Cross-Verification Analysis
+### 示例 2：带用户笔记的综述
 
-Analyze consensus and disagreements across multiple papers:
-
-```bash
-python main.py --topic "量子计算研究方向" \
-  --files examples/quantum_paper1.txt examples/quantum_paper2.txt \
-  --lang zh
+用户输入：
+```
+我有一些关于《论语·学而》"孝弟也者，其为仁之本与"的笔记，请帮我生成文献综述。
+文件路径：notes/xue-er-notes.txt
 ```
 
-**Output**:
-- Review with explicit consensus/disagreement sections
-- Comparison of viewpoints with source attribution
+系统将：
+1. 读取用户笔记作为[实证]层材料
+2. 自动检索相关注疏
+3. 运行四把手术刀进行深度分析
+4. 生成证据分级综述
 
-### Example 3: Simple File Read (Fast Mode)
+### 示例 3：指定格式的输出
 
-Just read file contents without full analysis:
-
-```bash
-python main.py --topic "读取文件" \
-  --files examples/sample.txt \
-  --simple-read
+用户输入：
+```
+请生成《论语·为政》"吾十有五而志于学"的综述，输出为 PDF 格式。
 ```
 
-**Output**:
-- Basic file information only (type, summary, author, year)
-- Faster processing for large files
+---
 
-### Example 4: English Review with BibTeX Export
+## 六、安装与配置
 
-Generate English review from PDF documents:
-
-```bash
-python main.py --topic "Deep Learning in Computer Vision" \
-  --files docs/cv_paper1.pdf docs/cv_paper2.pdf \
-  --lang en --output-bibtex
-```
-
-### Example 5: Disable Web Search
-
-Use only local documents without web search:
-
-```bash
-python main.py --topic "区块链技术应用" \
-  --files examples/blockchain_papers/ \
-  --no-web
-```
-
-## Installation
+### 安装
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Dependencies
+### 命令行参数
 
-- `fastmcp>=0.10.0` - MCP framework
-- `httpx>=0.27.0` - HTTP client
-- `pypdf>=4.0.0` - PDF parsing
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--topic` | 字符串 | 必填 | 研究主题/章句 |
+| `--files` | 列表 | 可选 | 本地文档文件路径 |
+| `--lang` | 字符串 | zh | 输出语言 (zh/en) |
+| `--format` | 字符串 | md | 输出格式 (md/pdf/docx) |
+| `--depth` | 字符串 | deep | 分析深度 (basic/medium/deep) |
+| `--no-socratic` | 标志 | False | 跳过圆桌会议阶段 |
 
-## Installation
+### MCP Server 模式
 
 ```bash
-pip install -r requirements.txt
+python main.py
 ```
 
-## Dependencies
+---
 
-- `fastmcp>=0.10.0` - MCP framework
-- `httpx>=0.27.0` - HTTP client
-- `pypdf>=4.0.0` - PDF parsing
+## 七、质量自检清单
+
+完成综述后，请自检：
+
+- [ ] 是否运行了四把手术刀（政治史探针、六维解剖、异常检测、变量替换）？
+- [ ] 是否在检查点 A 和检查点 B 处暂停并等待用户确认？
+- [ ] 圆桌会议是否包含至少两组对立学术立场的学者？
+- [ ] 苏格拉底是否提出了至少 3 个致命反问？
+- [ ] 是否区分了[实证]、[推论]、[缺失]三个证据层级？
+- [ ] 是否包含"老丁因子"——一个非共识冷知识命题？
+- [ ] 引用格式是否符合规范？
+- [ ] 是否避免了"学者认为"等模糊表述？
+- [ ] 是否保持了客观中立的立场？
+- [ ] 幻觉控制：是否所有引用都有明确出处？
+
+---
+
+*本提示词由【老丁读书】团队编制，v3.0.0 苏格拉底圆桌版。*
+*从"文献综述"进化为"学术史侦探"。*

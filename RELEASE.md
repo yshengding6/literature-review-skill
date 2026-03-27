@@ -1,11 +1,65 @@
-# Literature Review Skill v2.2.0 - 发布说明
+# Literature Review Skill v3.0.0 - 发布说明
 
 ## 发布日期
-2026-03-13
+2026-03-27
+
+## 版本代号
+Socratic Roundtable（苏格拉底圆桌版）
 
 ## 版本说明
 
-这是 literature-review skill 的 v2.2.0 版本，包含多项改进和增强功能。
+这是 literature-review skill 的 v3.0.0 版本，是一次**全面方法论重构**。从"文献综述工具"进化为"学术史侦探系统"。
+
+---
+
+## 核心更新
+
+### 🔪 四把手术刀（深度研究方法论）
+
+v3.0 强制要求 AI 放弃平庸的道德感悟，通过四种硬核逻辑路径进行推演：
+
+1. **政治史视角探针 (Political History Probe)**：将文本还原为春秋时代的权力博弈
+2. **注疏六维解剖 (6-Dimension Deconstruction)**：拆解注疏的文本解释、方法论、概念重构、立场假设、隐含前提、时代动机
+3. **文本异常检测 (Anomaly Detection)**：扫描"赘词""矛盾词""沉默区"，作为冷知识突破口
+4. **变量替换实验 (Counterfactual Testing)**：通过换动词/对象/时间，以"语义塌陷"反证原意图唯一性
+
+### 🏛️ 苏格拉底圆桌会议
+
+- **冲突点将**：自动识别 6 位代表学者，强制包含至少两组对立学术立场
+- **苏格拉底固定席位**：使用助产术进行逻辑清洗，提出 3 个致命反问
+- **重点追问**：这个解释是为了掩盖什么政治尴尬？
+
+### ⏸️ 交互式检查点机制
+
+- **检查点 A**：原子化扫描完成后暂停，用户确认基础事实
+- **检查点 B**：圆桌会议角色阵容确认，用户可调整学者组合
+
+### 📊 证据分级协议
+
+- **[实证]**：来自古籍原文或可信史料的直接证据
+- **[推论]**：基于学派立场的逻辑推导，须标注学派归属
+- **[缺失]**：明确指出缺乏直接证据的问题
+
+### 🔥 老丁因子 (The Non-Consensus Factor)
+
+- 强制在输出阶段寻找一个"非共识"观察点
+- **异见捕捉器**：总结主流注疏中被共同忽略的细节
+- **冷知识命题**：生成"X 并不是 Y，而是 Z"格式的判断性结论
+
+---
+
+## 输出增强
+
+- PDF/Docx 导出支持**标准学术脚注格式**
+- 输出字数扩展至 4000–6000 字
+- 新增圆桌会议实录作为独立章节
+- 新增多格式输出参数 `--format md|pdf|docx`
+
+## 幻觉控制强化
+
+- 严禁混淆注者原话与 AI 解读
+- 所有注疏引用必须标注具体出处（作者、篇名、版本）
+- AI 推论必须使用 `[推论]` 标签显式声明
 
 ---
 
@@ -34,113 +88,55 @@ pip install -r requirements.txt
 
 ---
 
-## 新增功能
+## 使用示例
 
-### 1. 简单读取模式 (`--simple-read`)
-
-新增快速文件查看功能，用于只需要读取文件内容而不进行完整分析的场景。
+### 示例 1：论语章句深度分析
 
 ```bash
-# 简单读取模式
-python main.py --topic "快速查看" --files examples/sample.txt --simple-read
+python main.py --topic "论语·八佾·八佾舞于庭" --format md
 ```
 
-### 2. 日志基础设施
-
-添加统一的日志记录系统，便于调试和问题追踪。
-
-日志文件位置：`literature_review.log`
-
-### 3. 完整使用示例
-
-SKILL.md 中新增 5 个完整的使用场景示例：
-
-1. 基础文献综述（三篇文档）
-2. 交叉验证共识与分歧
-3. 简单文件读取（快速模式）
-4. 英文输出与 BibTeX 导出
-5. 禁用网络搜索（仅本地文档）
-
-### 4. Feishu 集成配置说明
-
-新增 Feishu API 配置示例和说明。
-
----
-
-## 改进内容
-
-### 文档改进
-
-- **SKILL.md 描述优化**：添加触发关键词（"用于"、"帮助"、"for"）
-- **使用示例完善**：5 个不同场景的完整示例
-- **网络搜索说明**：明确标注为模拟实现
-
-### 代码质量提升
-
-- **异常处理改进**：修复裸 except 子句
-- **类型提示完善**：为私有方法添加类型提示
-- **日志系统集成**：统一的日志记录
-
-### 法律合规
-
-- **LICENSE 文件**：新增 MIT License，满足开源项目要求
-
----
-
-## 使用说明
-
-### MCP 工具
-
-skill 提供以下 MCP 工具：
-
-- `generate_literature_review` - 生成文献综述
-- `analyze_document` - 分析单个文档
-- `cross_verify_documents` - 交叉验证多篇文档
-- `fetch_feishu_data` - 获取飞书数据
-
-### 命令行使用
+### 示例 2：跳过圆桌会议
 
 ```bash
-# 基础用法
-python main.py --topic "研究主题" --files doc1.txt doc2.pdf
-
-# 带选项
-python main.py --topic "研究主题" --files doc1.txt --lang en --depth deep
-
-# 简单读取模式
-python main.py --topic "快速查看" --files doc1.txt --simple-read
+python main.py --topic "论语·学而·孝弟为仁之本" --no-socratic --format pdf
 ```
 
-### 配置文件
+### 示例 3：带用户笔记的综述
 
-复制 `config.yaml.example` 为 `config.yaml` 并根据需要配置：
-
-```yaml
-feishu:
-  enabled: true
-  app_id: "your_app_id"
-  app_secret: "your_app_secret"
+```bash
+python main.py --topic "论语·为政·吾十有五而志于学" --files notes/xue-er-notes.txt
 ```
 
 ---
 
-## 已知问题
+## 向后兼容
 
-1. **网络搜索**：当前为模拟实现，需要配置真实 API 才能使用
-2. **Feishu 集成**：需要配置 API 凭证才能使用
-3. **PDF 解析**：某些复杂 PDF 布局可能需要 marker-pdf 库
+- 保留原有 MCP 工具接口（generate_literature_review, analyze_document, cross_verify_documents）
+- 保留飞书集成功能
+- 保留 PDF 解析、BibTeX 导出等功能
+- 新增 `--no-socratic` 参数可跳过圆桌会议阶段
 
 ---
 
 ## 迁移指南
 
-从 v2.1.0 升级到 v2.2.0：
+从 v2.2.1 升级到 v3.0.0：
 
-1. 更新 SKILL.md（描述和使用示例）
-2. 替换 main.py（新增日志和简单读取模式）
-3. 修复 markdown-converter.py（异常处理）
-4. 添加 CHANGELOG.md（记录变更）
-5. 添加 LICENSE 文件
+1. 替换 SKILL.md（完全重写）
+2. 替换 PROMPT_TEMPLATE.md（苏格拉底圆桌版）
+3. 更新 main.py（版本号和文档字符串）
+4. 更新 README.md 和 README_CN.md
+5. 更新 CHANGELOG.md
+6. （可选）如需跳过圆桌会议，使用 `--no-socratic` 参数
+
+---
+
+## 已知限制
+
+1. **圆桌会议角色**：AI 模拟的学者观点基于学派立场推演，需用户在检查点 B 确认
+2. **政治史还原**：需要用户具备一定的春秋史知识基础，AI 推测部分需审慎对待
+3. **冷知识命题**：非共识观察点需用户自行验证
 
 ---
 

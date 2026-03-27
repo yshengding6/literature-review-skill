@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
+[![Version](https://img.shields.io/badge/version-3.0.0-purple.svg)]()
 
 ## English / [中文](#中文说明)
 
@@ -10,27 +11,37 @@
 
 ## English
 
-**A professional AI agent for academic literature review featuring Analects-level deep analysis and Feishu Bitable integration.**
+**A professional AI agent for classical Chinese literature review featuring "Socratic Roundtable" methodology, political history probing, and evidence-graded synthesis.**
 
-This intelligent agent helps researchers systematically analyze academic papers, identify consensus and disagreements across sources, detect research gaps, and generate comprehensive literature reviews with strict citation standards.
+This intelligent agent helps researchers systematically reconstruct the academic history of classical texts through four hardcore analytical methods: Political History Probe, 6-Dimension Deconstruction, Anomaly Detection, and Counterfactual Testing. It features an interactive checkpoint system and a Socratic roundtable debate for rigorous scholarly analysis.
 
-### Key Features
+### Key Features (v3.0.0 — Socratic Roundtable)
 
-#### 🔬 Analects-Level Deep Analysis
-- **Cross-Verification System**: Identify consensus views and conflicting opinions across multiple papers
-- **Research Gap Detection**: Automatically detect limitations, unanswered questions, and future research directions
-- **Thematic Analysis**: Extract key themes with frequency analysis and confidence scoring
-- **Strict Citation Format**: Enforces `[Author, Year, Page]` format to prevent AI hallucinations
+#### 🔪 Four Surgical Knives (Core Methodology)
+- **Political History Probe**: Restore text to Spring-Autumn power dynamics, analyzing interest distribution, political risk aversion, and legitimacy construction
+- **6-Dimension Deconstruction**: Dissect commentaries across textual interpretation, methodology, conceptual reconstruction, stance assumptions, implicit premises, and era motivation
+- **Anomaly Detection**: Scan for "unnecessary but deliberately preserved" vocabulary to find logical breakpoints as "cold knowledge" breakthrough points
+- **Counterfactual Testing**: Execute minimal substitution experiments (verb/object/time) to prove the uniqueness of original intent through "semantic collapse"
 
-#### 📊 Multi-Source Integration
+#### 🏛️ Interactive Socratic Roundtable
+- **Conflict-driven role selection**: 6 representative scholars with at least 2 opposing academic stances
+- **Socrates (fixed seat)**: Uses elenchus (midwifery method) for logical cleansing with 3 fatal counter-questions
+- **Checkpoint system**: User confirmation at key stages ensures research path accuracy
+
+#### 📊 Evidence-Graded Synthesis Protocol
+- **[Empirical]**: Content directly from ancient texts or reliable historical sources
+- **[Inference]**: Logical deductions based on scholarly stance, must attribute to specific school
+- **[Missing]**: Explicit acknowledgment of gaps in existing evidence
+
+#### 🔥 The Non-Consensus Factor (老丁因子)
+- Forces discovery of a "non-consensus" observation point for content uniqueness
+- **Heresy Detector**: Summarizes details collectively ignored by mainstream commentaries
+- **Cold Knowledge Proposition**: Generate conclusions in "X is not Y, but Z" format
+
+#### 🌐 Multi-Source Integration (Inherited)
 - **Local PDF Mode**: Analyze PDF, TXT, MD files with advanced parsing
-- **Feishu Bitable Mode**: Direct integration with Feishu/Lark multidimensional tables for collaborative research
+- **Feishu Bitable Mode**: Direct integration with Feishu/Lark multidimensional tables
 - **Web Search**: Fetch literature from online sources (API integration ready)
-
-#### 🌐 Bilingual Support
-- Full Chinese/English output support
-- CJK (Chinese/Japanese/Korean) character handling in PDF parsing
-- Academic formatting for both languages
 
 ### Installation
 
@@ -103,6 +114,21 @@ The server exposes the following tools:
 - `cross_verify_documents` - Cross-verify multiple documents
 - `fetch_feishu_data` - Fetch data from Feishu Bitable
 - `list_feishu_tables` - List tables in Feishu base
+
+### Multi-Format Output
+
+Generate reviews in multiple formats:
+
+```bash
+# Markdown (default)
+python main.py --topic "论语·八佾" --format md
+
+# PDF with academic footnotes
+python main.py --topic "论语·八佾" --format pdf
+
+# Word document
+python main.py --topic "论语·八佾" --format docx
+```
 
 ### Configuration
 
