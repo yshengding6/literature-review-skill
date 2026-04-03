@@ -6,7 +6,7 @@ tags: [research, classical-chinese, literature-review, confucianism, political-h
 author: Claude
 ---
 
-# Literature Review Skill v3.1.1 — Socratic Roundtable (苏格拉底圆桌版)
+# Literature Review Skill v4.0.0 — Socratic Roundtable (苏格拉底圆桌版)
 
 > **代号**: Socratic Roundtable
 > **适用场景**: 【老丁读书】专栏 · 经典章句学术史重构
@@ -32,7 +32,7 @@ author: Claude
 
 ## 一、方法论：深度研究的"四把手术刀"
 
-v3.0 版本**强制要求** AI 放弃平庸的道德感悟，必须通过以下四种硬核逻辑路径进行推演：
+v4.0 版本**强制要求** AI 放弃平庸的道德感悟，必须通过以下四种硬核逻辑路径进行推演：
 
 ### 🔪 1. 政治史视角探针 (Political History Probe)
 
@@ -167,7 +167,7 @@ v3.0 版本**强制要求** AI 放弃平庸的道德感悟，必须通过以下�
 
 ---
 
-## 三、v3.0 核心指令集 (Core Prompts)
+## 三、v4.0 核心指令集 (Core Prompts)
 
 ### 📜 专有指令 0：注疏解剖（国学大师/考据家视角）
 
@@ -368,7 +368,7 @@ v3.0 版本**强制要求** AI 放弃平庸的道德感悟，必须通过以下�
 ## 四、技术协议与版本特性
 
 ### 版本号
-3.2.0
+4.0.0
 
 ### 老丁因子 (The Non-Consensus Factor)
 强制系统在输出阶段寻找一个"非共识"观察点，确保内容的独特性。这不是"标新立异"，而是"被忽视但可被论证"的观察。
@@ -483,8 +483,8 @@ python main.py
 
 ---
 
-*本提示词由【老丁读书】团队编制，v3.2.0 苏格拉底圆桌版。*
-*v3.2.0 新增：《古典文献与注疏深度解读协议》(The Omni-Classic Protocol)，四阶段分析框架（考据→博弈→义理→转译），输出格式增加 docx 导出。*
+*本提示词由【老丁读书】团队编制，v4.0.0 苏格拉底圆桌版。*
+*v4.0.0 新增：《古典文献与注疏深度解读协议》(The Omni-Classic Protocol)，四阶段分析框架（考据→博弈→义理→转译），检查点 B0 机制。*
 *v3.1.1 新增：圆桌会议必须在所有注疏解读完毕后方可召开。*
 *v3.1.0 新增：本注疏优先原则 + 国学大师/考据家/历史学家视角的注疏分析框架。*
 *从"文献综述"进化为"学术史侦探"。*

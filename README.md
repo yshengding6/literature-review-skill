@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
-[![Version](https://img.shields.io/badge/version-3.0.0-purple.svg)]()
+[![Version](https://img.shields.io/badge/version-4.0.0-purple.svg)]()
 
 ## English / [中文](#中文说明)
 
@@ -15,7 +15,7 @@
 
 This intelligent agent helps researchers systematically reconstruct the academic history of classical texts through four hardcore analytical methods: Political History Probe, 6-Dimension Deconstruction, Anomaly Detection, and Counterfactual Testing. It features an interactive checkpoint system and a Socratic roundtable debate for rigorous scholarly analysis.
 
-### Key Features (v3.0.0 — Socratic Roundtable)
+### Key Features (v4.0.0 — Socratic Roundtable)
 
 #### 🔪 Four Surgical Knives (Core Methodology)
 - **Political History Probe**: Restore text to Spring-Autumn power dynamics, analyzing interest distribution, political risk aversion, and legitimacy construction
