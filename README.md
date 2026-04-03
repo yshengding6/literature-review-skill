@@ -17,6 +17,13 @@ This intelligent agent helps researchers systematically reconstruct the academic
 
 ### Key Features (v4.0.0 — Socratic Roundtable)
 
+#### 📜 Omni-Classic Protocol (NEW in v4.0.0)
+- **Stage 1 - Textual Analysis (考据层)**: Character-level interpretation, variant collation, establishing physical fact base
+- **Stage 2 - Scholarly Debate (博弈层)**: 6-Dimension commentary deconstruction, political history probing, deep historical motivation analysis
+- **Stage 3 - Philosophical Synthesis (义理层)**: Dynamic roundtable conference triggering scholarly stance collision
+- **Stage 4 - Evidence-Based Translation (转译层)**: Evidence-graded comprehensive synthesis, multi-format output
+- **Checkpoint B0 (NEW)**: Pause for user confirmation after all commentaries are analyzed before entering roundtable debate phase
+
 #### 🔪 Four Surgical Knives (Core Methodology)
 - **Political History Probe**: Restore text to Spring-Autumn power dynamics, analyzing interest distribution, political risk aversion, and legitimacy construction
 - **6-Dimension Deconstruction**: Dissect commentaries across textual interpretation, methodology, conceptual reconstruction, stance assumptions, implicit premises, and era motivation
@@ -214,6 +221,13 @@ MIT License - see [LICENSE](LICENSE) for details
 本智能体帮助研究人员系统分析学术论文，识别多篇文献间的共识与分歧，检测研究空白，并生成符合严格引用标准的综合文献综述。
 
 ### 核心特性
+
+#### 📜 Omni-Classic Protocol（v4.0.0 新增）
+- **阶段 1 - 考据层**：字词校释、异文校勘，建立物理事实基础
+- **阶段 2 - 博弈层**：注疏六维解剖、政治史探针，深度挖掘历史动机
+- **阶段 3 - 义理层**：动态圆桌会议，触发学术立场对立碰撞
+- **阶段 4 - 转译层**：证据分级综述合成，多格式输出
+- **检查点 B0（NEW）**：所有注疏解读完成后，暂停确认后再进入圆桌论辩阶段
 
 #### 🔬 《论语》级深度分析
 - **交叉验证系统**：识别多篇文献中的共识观点与分歧
