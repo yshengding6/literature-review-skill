@@ -87,7 +87,7 @@
 
 - SKILL.md 完全重写，新增方法论、工作流、核心指令集
 - PROMPT_TEMPLATE.md 完全重写为苏格拉底圆桌版
-- README.md 和 README_CN.md 更新至 v3.0.0
+- README.md 更新至 v4.0.0
 
 ### 向后兼容
 
