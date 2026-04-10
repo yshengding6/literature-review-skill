@@ -1,0 +1,207 @@
+# Literature Review Skill - 变更日志
+
+## [4.2.0] - 2026-04-10
+
+### 代号：Bug Fix & Security Audit（Bug修复与安全审查）
+
+### Bug 修复
+
+- **main.py**: 修复 `citation_key` 属性在有年份无页码时缺少闭合 `]` 的逻辑错误
+- **main.py**: 修复中文引用提取Bug（`match` 是字符串而非 re.Match 对象，错误调用 `.group()`）
+- **main.py**: 修复正则表达式括号不匹配的语法错误（中文引用带页码模式）
+- **main.py**: 优化对立观点检测中的 `sum(opposition_pairs, ())` 性能问题
+- **memory_manager.py**: 修复 `record_failure()` 中 `blade_data` 可能在条件分支外未定义的Bug
+- **memory_manager.py**: 修复 `_compute_chapter_features()` 中冗余赋值和变量名不一致问题
+- **markdown-converter.py**: 修复字体检测方式错误（`dir(pdfmetrics)` 检查的是模块属性而非已注册字体）
+- **workflow_orchestrator.py**: 修复 `save_docs_to_files()` 引用不存在的 `self.documents` 属性
+- **workflow_orchestrator.py**: 修复 `markdown-converter.py` 文件名用hyphen导致 import 失败的问题
+
+### 安全审查
+
+- 确认 `getnote_integration.py` 凭证读取路径不暴露敏感信息
+- 确认 `config.example.yaml` 仅含占位符
+- 确认飞书凭证从环境变量读取，安全做法合规
+
+### 清理
+
+- 删除一次性脚本 `save_qixi_notes.py`（硬编码路径，已完成使命）
+- 删除空壳测试 `test_memory.py`（无实际测试逻辑）
+- 移动 `test_save.py` → `tests/test_save.py`
+- 删除 2 个 Word 临时文件（`~$` 前缀）
+- 删除 2 个重复副本 docx 文件
+- 删除 v2.0 提示词的 docx/pdf 版本（保留 md 作为历史参考）
+- 大幅扩充 `.gitignore`（排除 archive/ 目录、config.yaml 等）
+
+---
+
+## [4.1.2] - 2026-04-06
+
+### 代号：Cultural Comparison + P3 Enhanced Routing
+
+### 新增功能
+
+- **文化比较模块** (`cultural_comparison.py`)：诸子百家 vs 西方哲学跨文化分析
+- **Get笔记集成** (`getnote_integration.py`)：自动保存到【论语研究】知识库
+- **工作流编排器** (`workflow_orchestrator.py`)：生成三种文档（注疏解读、圆桌纪要、文献综述）
+- **P3 增强路由**：基于 chapter_graph.json 的章节级特征计算与加权路由
+
+### 改进
+
+- `memory_manager.py` 版本号更新至 v4.1.2
+- 新增 `route_chapter` 命令：直接传入章节ID进行路由
+- 新增 `_compute_chapter_features()`：将 compression 数据转换为 blade 对齐的特征向量
+- `routing_rules` 支持文本特征→blade 加权映射
+
+---
+
+## [4.0.0] - 2026-04-03
+
+### 代号：The Omni-Classic Protocol（古典文献与注疏深度解读协议）
+
+### 重大更新
+
+本次更新引入《古典文献与注疏深度解读协议》，提供四阶段分析框架（考据→博弈→义理→转译）。
+
+### 新增：四阶段分析框架
+
+- **阶段 1 - 考据层**：字词校释、异文校勘，建立物理事实基础
+- **阶段 2 - 博弈层**：注疏六维解剖、政治史探针，深度挖掘历史动机
+- **阶段 3 - 义理层**：动态圆桌会议，触发学术立场对立碰撞
+- **阶段 4 - 转译层**：证据分级综述合成，多格式输出
+
+### 新增：检查点 B0
+
+- **检查点 B0**：所有注疏解读完成后，暂停确认后再进入圆桌论辩阶段
+- 确保圆桌会议只在完整分析基础上召开
+
+### 代码改进
+
+- main.py 版本号更新至 4.0.0
+- README.md 版本号更新至 4.0.0
+- SKILL.md 版本号更新至 4.0.0
+
+### 文档更新
+
+- CHANGELOG.md 添加 v4.0.0 变更记录
+
+---
+
+## [3.0.0] - 2026-03-27
+
+### 代号：Socratic Roundtable（苏格拉底圆桌版）
+
+### 重大更新
+
+本次更新为**全面方法论重构**，从"文献综述工具"进化为"学术史侦探系统"。
+
+### 新增方法论：四把手术刀
+
+- 🔪 **政治史视角探针 (Political History Probe)**：将文本还原为春秋时代权力博弈，分析利益分配、政治避险与合法性构建，剥离后世道德化滤镜
+- 🔪 **注疏六维解剖 (6-Dimension Deconstruction)**：将历代注疏视为"解释机器"，拆解其文本解释、方法论、概念重构、立场假设、隐含前提、时代动机
+- 🔪 **文本异常检测 (Anomaly Detection)**：扫描"赘词""矛盾词""沉默区""重复结构"，作为冷知识命题突破口
+- 🔪 **变量替换实验 (Counterfactual Testing)**：通过换动词/换对象/换时间，以"语义塌陷"反证原意图唯一性
+
+### 新增交互机制
+
+- **检查点 A**：原子化扫描完成后暂停，用户确认基础事实
+- **检查点 B**：圆桌会议角色阵容确认，用户可调整学者组合
+
+### 新增：动态圆桌会议 (Socratic Edition)
+
+- 自动点将 6 位代表学者，**强制要求**至少两组对立学术立场
+- **苏格拉底固定席位**（第 7 席），使用助产术进行逻辑清洗
+- 苏格拉底提出 3 个致命反问，重点追问政治掩盖动机
+
+### 新增：证据分级协议
+
+- **[实证]**：来自古籍原文或可信史料的直接证据
+- **[推论]**：基于学派立场的逻辑推导，须标注学派归属
+- **[缺失]**：明确指出缺乏直接证据的问题
+
+### 新增：老丁因子 (The Non-Consensus Factor)
+
+- 强制在输出阶段寻找一个"非共识"观察点
+- **异见捕捉器**：总结主流注疏中被共同忽略的细节
+- **冷知识命题**：生成"X 并不是 Y，而是 Z"格式的判断性结论
+
+### 输出增强
+
+- PDF/Docx 导出支持**标准学术脚注格式**
+- 输出字数扩展至 4000–6000 字
+- 新增圆桌会议实录（精简版）作为独立章节
+- 新增多格式输出参数 `--format md|pdf|docx`
+
+### 幻觉控制强化
+
+- 严禁混淆注者原话与 AI 解读
+- 所有注疏引用必须标注具体出处（作者、篇名、版本）
+- AI 推论必须使用 `[推论]` 标签显式声明
+
+### 文档更新
+
+- SKILL.md 完全重写，新增方法论、工作流、核心指令集
+- PROMPT_TEMPLATE.md 完全重写为苏格拉底圆桌版
+- README.md 更新至 v4.0.0
+
+### 向后兼容
+
+- 保留原有 MCP 工具接口（generate_literature_review, analyze_document, cross_verify_documents）
+- 保留飞书集成功能
+- 保留 PDF 解析、BibTeX 导出等功能
+- 新增 `--no-socratic` 参数可跳过圆桌会议阶段
+
+## [2.2.1] - 2026-03-13
+
+### 新增功能
+- 添加简单读取模式 (`--simple-read`) 用于快速文件查看
+- 添加日志基础设施，便于调试和问题追踪
+- 添加完整的 Feishu 集成使用示例
+
+### 改进
+- **SKILL.md 描述改进**：添加触发关键词（"用于"、"帮助"、"for"、"use"）使 skill 更容易被正确触发
+- **SKILL.md 使用示例**：添加 5 个完整的使用场景示例，包括基本综述、交叉验证、简单读取、英文输出、禁用网络搜索
+- **异常处理改进**：修复 markdown-converter.py 中的裸 except 子句，使用特定异常类型 (OSError, IOError, RuntimeError, ValueError, AttributeError)
+- **网络搜索文档**：在 README.md 和 SKILL.md 中明确标注网络搜索为模拟实现，提醒用户需要配置真实 API
+- **类型提示**：为私有方法添加类型提示 (`-> str`, `-> float`)
+
+### 文档
+- 新增 LICENSE 文件（MIT License）
+- 新增 CHANGELOG.md 本文件
+- 改进 SKILL.md 描述和添加使用示例
+
+### 代码质量
+- 添加 logging 模块用于统一的日志记录
+- 在关键函数中添加日志调用（文件分析、BibTeX 生成等）
+- 修复异常处理中的裸 except 子句
+
+### 安全
+- 网络搜索模拟实现明确标注为模拟状态
+- Feishu 集成需要用户配置凭证（环境变量或 config.yaml）
+
+## [2.1.0] - 2024-01-XX
+
+### 新增功能
+- 交叉验证：识别共识与分歧
+- 研究空白：自动检测研究空白
+- 引用溯源：严格的引用格式 [Author, Year]
+- PDF 解析：支持学术论文 PDF
+- BibTeX 导出：生成 Zotero/LaTeX 兼容的参考文献
+- Windows 兼容：完全支持 Windows 路径和编码
+- 飞书数据集成：从飞书多维表格/电子表格获取数据
+
+### 高级功能
+- PDF 解析：集成 pypdf 用于更好的中文支持
+- BibTeX 支持：自动生成学术引用格式
+- 多语言支持：中文（zh）和英文（en）输出
+
+### 文档
+- 完善 README.md，包含安装、使用示例、故障排除
+- 新增 SKILL.md 用于 skill 描述和功能说明
+
+## [1.0.0] - 2024-01-XX
+
+### 初始版本
+- 基本文档分析
+- 网络搜索支持（模拟实现）
+- Markdown 综述报告生成
+- 文件编码自动检测（UTF-8、GBK、Latin-1）

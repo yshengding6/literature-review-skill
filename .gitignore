@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 运行时数据
+literature_review_memory.json
+literature_review.log
+*.log
+
+# 配置文件（含敏感信息）
+config.yaml
+
+# 大型二进制文件（archive 目录本地保留，不进 Git）
+archive/
+
+# 临时文件
+~$*
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# 输出文件
+output/
+*.bib
+*_综述.md
+
+# 环境文件
+.env
+.venv/
+venv/
