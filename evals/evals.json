@@ -152,6 +152,159 @@
           "check": "React component code generated, no literature review produced"
         }
       ]
+    },
+    {
+      "id": 6,
+      "name": "lunyu_political_history_routing",
+      "prompt": "请对《论语·八佾》'孔子谓季氏八佾舞于庭'进行文献综述。三桓专权，季氏僭越礼制，朱熹、刘宝楠对此有不同解读。",
+      "expected_output": "启用政治史探针（涉及三桓/季氏/僭越），启用六维解剖（用户提供注疏），输出9章结构",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Political_history_enabled",
+          "description": "应启用政治史探针（三桓/季氏触发）",
+          "type": "routing_check",
+          "expected": true,
+          "check": "political tool enabled due to '三桓'/'季氏'/'僭越' keywords"
+        },
+        {
+          "name": "Anatomy_enabled",
+          "description": "应启用六维解剖（用户提供注疏）",
+          "type": "routing_check",
+          "expected": true,
+          "check": "anatomy tool enabled due to user-provided commentary"
+        },
+        {
+          "name": "Has_chapter2_political",
+          "description": "第2章政治史还原应存在且有内容",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '政治史还原' with substantial content"
+        },
+        {
+          "name": "Has_chapter3_anatomy",
+          "description": "第3章注疏六维解剖应存在",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '注疏六维解剖'"
+        },
+        {
+          "name": "Has_laoding_factor_structure",
+          "description": "第8章老丁因子应包含6个子结构",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '核心判断', '证据链', '论证路径', '潜在反例', '分歧点', '定位说明'"
+        },
+        {
+          "name": "Evidence_anchoring",
+          "description": "应使用[实证]/[推论]/[缺失]证据锚定",
+          "type": "format_check",
+          "expected": true,
+          "check": "output contains '[实证]' and '[推论]' markers"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "lunyu_minimal_only_lexical",
+      "prompt": "请分析'学而时习之，不亦说乎'这句话的字义。",
+      "expected_output": "仅启用字词校释+异常检测+变量替换，政治史/六维不启用，对应章节标注'本篇不适用'",
+      "files": [],
+      "assertions": [
+        {
+          "name": "No_political_for_simple_text",
+          "description": "简单文本不应启用政治史",
+          "type": "routing_check",
+          "expected": false,
+          "check": "political tool NOT enabled (no political keywords)"
+        },
+        {
+          "name": "No_anatomy_without_commentary",
+          "description": "未提供注疏不应启用六维解剖",
+          "type": "routing_check",
+          "expected": false,
+          "check": "anatomy tool NOT enabled (no user-provided commentary)"
+        },
+        {
+          "name": "Has_not_applicable_marker",
+          "description": "未启用章节应标注'本篇不适用'",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '本篇不适用' for political and anatomy chapters"
+        },
+        {
+          "name": "Has_chapter1_lexical",
+          "description": "第1章原子化扫描结果应存在",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '原子化扫描结果'"
+        },
+        {
+          "name": "Has_laoding_factor_minimal",
+          "description": "即使最小化文本，老丁因子章节也必须存在",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '老丁因子' with core judgment"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "lunyu_qixi_anatomy_variable",
+      "prompt": "请对《论语·公冶长》'孰谓微生高直？或乞醯焉，乞诸其邻而与之'进行文献综述。孔安国注：乞之四邻，以应求者，用意委曲，非为直人。朱熹注：微生姓，高名，鲁人。乞醯非直，而托乞以与人，尤为不直。",
+      "expected_output": "启用六维解剖（用户提供注疏）+变量替换（'直'可替换性）+异常检测，不启用政治史，输出完整9章",
+      "files": [],
+      "assertions": [
+        {
+          "name": "Anatomy_enabled_qixi",
+          "description": "乞醯章应启用六维解剖（有注疏）",
+          "type": "routing_check",
+          "expected": true,
+          "check": "anatomy tool enabled (user provided Kong Anguo and Zhu Xi commentaries)"
+        },
+        {
+          "name": "Variable_enabled_qixi",
+          "description": "乞醯章应启用变量替换（'直'可替换性）",
+          "type": "routing_check",
+          "expected": true,
+          "check": "variable replacement enabled ('直' has replaceability)"
+        },
+        {
+          "name": "No_political_qixi",
+          "description": "乞醯章不涉及政治史",
+          "type": "routing_check",
+          "expected": false,
+          "check": "political tool NOT enabled (no political keywords)"
+        },
+        {
+          "name": "Has_chapter3_anatomy_qixi",
+          "description": "第3章注疏六维解剖应存在",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '注疏六维解剖'"
+        },
+        {
+          "name": "Has_chapter5_variable_qixi",
+          "description": "第5章变量替换实验应存在",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains '变量替换实验'"
+        },
+        {
+          "name": "Has_political_not_applicable",
+          "description": "第2章政治史还原应标注'本篇不适用'",
+          "type": "structure_check",
+          "expected": true,
+          "check": "chapter 2 contains '本篇不适用'"
+        },
+        {
+          "name": "Laoding_factor_complete",
+          "description": "老丁因子6子结构完整",
+          "type": "structure_check",
+          "expected": true,
+          "check": "output contains all 6 sub-structures: 核心判断, 证据链, 论证路径, 潜在反例, 分歧点, 定位说明"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,221 @@
+{
+  "description": "Literature Review Skill v4.3.0 - Golden Set for Harness Testing",
+  "version": "4.3.0",
+  "created": "2026-04-14",
+  "principle_zero_rules": {
+    "route_triggers": {
+      "political_history": {
+        "keywords": ["三桓", "季氏", "公室", "君臣", "礼制", "僭越", "权臣", "去国", "流亡"],
+        "blade": "政治史探针"
+      },
+      "anomaly_detection": {
+        "keywords": ["异文", "脱文", "衍文", "错简", "版本差异"],
+        "condition": "原文已被历代注家多角度解读",
+        "blade": "异常检测"
+      },
+      "variable_replacement": {
+        "condition": "原文概念存在换词后语义崩塌的空间",
+        "blade": "变量替换实验"
+      },
+      "six_dimension": {
+        "condition": "用户提供了注疏原文",
+        "blade": "六维解剖"
+      }
+    },
+    "execution_order": [
+      "字词校释",
+      "政治史还原",
+      "六维解剖",
+      "异常检测",
+      "变量替换",
+      "圆桌会议",
+      "综述"
+    ],
+    "output_chapters": [
+      {"id": 1, "name": "原子化扫描结果", "always": true},
+      {"id": 2, "name": "政治史还原", "route": "political_history"},
+      {"id": 3, "name": "注疏六维解剖", "route": "six_dimension"},
+      {"id": 4, "name": "异常检测报告", "route": "anomaly_detection"},
+      {"id": 5, "name": "变量替换实验", "route": "variable_replacement"},
+      {"id": 6, "name": "圆桌会议纪要", "condition": "需要圆桌论辩时"},
+      {"id": 7, "name": "证据分级综述", "always": true},
+      {"id": 8, "name": "老丁因子", "always": true},
+      {"id": 9, "name": "冷知识命题", "always": true}
+    ],
+    "laoding_factor_structure": [
+      "核心判断",
+      "证据链",
+      "论证路径",
+      "潜在反例",
+      "与主流解释的分歧点",
+      "定位说明"
+    ]
+  },
+  "cases": [
+    {
+      "id": "bayi_chapter",
+      "name": "八佾章——政治史全启用",
+      "input": {
+        "topic": "《论语·八佾》'孔子谓季氏：八佾舞于庭，是可忍也，孰不可忍也？'",
+        "text": "孔子谓季氏：八佾舞于庭，是可忍也，孰不可忍也？",
+        "context": "此章涉及季氏僭越礼制、三桓专权的政治背景",
+        "provided_commentaries": [
+          "朱熹《四书章句集注》：季氏，鲁大夫季孙氏也。八佾，天子之舞也。季氏以大夫而僭天子之舞，是以可忍为不可忍也。"
+        ]
+      },
+      "expected_routes": {
+        "political_history": true,
+        "reason_political": "文本涉及'季氏'、'僭越'、礼制等政治史关键词",
+        "anomaly_detection": true,
+        "reason_anomaly": "历代注家对'忍'字有多角度解读（忍心/容忍）",
+        "variable_replacement": true,
+        "reason_variable": "'忍'字替换为'容'/'恕'后语义是否崩塌可验证",
+        "six_dimension": true,
+        "reason_six_dimension": "用户提供了朱熹注疏原文"
+      },
+      "expected_chapters": {
+        "present": [
+          "原子化扫描结果",
+          "政治史还原",
+          "注疏六维解剖",
+          "异常检测报告",
+          "变量替换实验",
+          "证据分级综述",
+          "老丁因子",
+          "冷知识命题"
+        ],
+        "not_applicable": [],
+        "optional": ["圆桌会议纪要"]
+      },
+      "expected_laoding_factor": {
+        "must_have": [
+          "核心判断",
+          "证据链",
+          "论证路径",
+          "潜在反例",
+          "与主流解释的分歧点",
+          "定位说明"
+        ],
+        "sample_core_judgment": "八佾章不是在讲忍不忍的问题，而是在讲礼制作为权力标识的功能——谁在用天子的规格跳舞，谁就在宣示权力的归属。"
+      },
+      "evidence_grading_check": {
+        "must_contain_tags": ["[实证]", "[推论]", "[缺失]"],
+        "no_untagged_inferences": true
+      },
+      "terminology_consistency_check": {
+        "terms_to_check": ["季氏", "三桓", "八佾"],
+        "must_be_consistent": true
+      }
+    },
+    {
+      "id": "xueer_chapter",
+      "name": "学而章——仅基础字词校释+异常检测",
+      "input": {
+        "topic": "《论语·学而》'学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？'",
+        "text": "学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知而不愠，不亦君子乎？",
+        "context": "此章为《论语》开篇，无明确政治史背景",
+        "provided_commentaries": []
+      },
+      "expected_routes": {
+        "political_history": false,
+        "reason_political": "文本不涉及三桓/季氏/公室/君臣/礼制/僭越等政治史关键词",
+        "anomaly_detection": true,
+        "reason_anomaly": "历代注家对'时'（按时/时常）、'说'（悦）、'朋'（同门/友人）有不同解读，存在多角度解读空间",
+        "variable_replacement": true,
+        "reason_variable": "'习'替换为'读'/'思'后语义是否崩塌可验证",
+        "six_dimension": false,
+        "reason_six_dimension": "用户未提供注疏原文"
+      },
+      "expected_chapters": {
+        "present": [
+          "原子化扫描结果",
+          "异常检测报告",
+          "变量替换实验",
+          "证据分级综述",
+          "老丁因子",
+          "冷知识命题"
+        ],
+        "not_applicable": [
+          "政治史还原",
+          "注疏六维解剖"
+        ],
+        "optional": ["圆桌会议纪要"]
+      },
+      "expected_laoding_factor": {
+        "must_have": [
+          "核心判断",
+          "证据链",
+          "论证路径",
+          "潜在反例",
+          "与主流解释的分歧点",
+          "定位说明"
+        ]
+      },
+      "evidence_grading_check": {
+        "must_contain_tags": ["[实证]", "[推论]"],
+        "no_untagged_inferences": true
+      },
+      "terminology_consistency_check": {
+        "terms_to_check": ["君子"],
+        "must_be_consistent": true
+      }
+    },
+    {
+      "id": "qixi_chapter",
+      "name": "乞醯章——六维解剖+变量替换+异常检测",
+      "input": {
+        "topic": "《论语·公冶长》'孰谓微生高直？或乞醯焉，乞诸其邻而与之。'",
+        "text": "孰谓微生高直？或乞醯焉，乞诸其邻而与之。",
+        "context": "此章讨论'直'的内涵，乞醯行为是否构成'不直'",
+        "provided_commentaries": [
+          "孔安国注：乞之四邻，以应求者，用意委曲，非为直人。",
+          "朱熹《四书章句集注》：微生姓，高名，鲁人。乞醯非直，而托乞以与人，尤为不直。"
+        ]
+      },
+      "expected_routes": {
+        "political_history": false,
+        "reason_political": "文本不涉及政治史关键词（三桓/季氏/公室等）",
+        "anomaly_detection": true,
+        "reason_anomaly": "'直'字历代注家有多角度解读（直率/正直/直爽），乞醯行为与'直'之间存在逻辑断裂",
+        "variable_replacement": true,
+        "reason_variable": "'直'替换为'信'/'诚'后语义是否崩塌可验证——这正是'直'概念的可替换空间",
+        "six_dimension": true,
+        "reason_six_dimension": "用户提供了孔安国和朱熹两条注疏原文"
+      },
+      "expected_chapters": {
+        "present": [
+          "原子化扫描结果",
+          "注疏六维解剖",
+          "异常检测报告",
+          "变量替换实验",
+          "证据分级综述",
+          "老丁因子",
+          "冷知识命题"
+        ],
+        "not_applicable": [
+          "政治史还原"
+        ],
+        "optional": ["圆桌会议纪要"]
+      },
+      "expected_laoding_factor": {
+        "must_have": [
+          "核心判断",
+          "证据链",
+          "论证路径",
+          "潜在反例",
+          "与主流解释的分歧点",
+          "定位说明"
+        ],
+        "sample_core_judgment": "孔子不是在批评微生高不直，而是在质疑'直'这个标签本身——谁给了他'直'的名声？这个名声本身是否成立？"
+      },
+      "evidence_grading_check": {
+        "must_contain_tags": ["[实证]", "[推论]", "[缺失]"],
+        "no_untagged_inferences": true
+      },
+      "terminology_consistency_check": {
+        "terms_to_check": ["直", "乞醯"],
+        "must_be_consistent": true
+      }
+    }
+  ]
+}
