@@ -1,3 +1,5 @@
+
+
 # Literature Review Agent | 文献综述智能体
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -202,10 +204,8 @@ The agent generates:
 
 ### Examples
 
-See the `examples/` directory for sample documents:
-- `sample_document.txt` - Basic text example
-- `sample_document2.txt` - Extended example
-- `quantum_paper1.txt` - Quantum computing example
+See the `examples/` directory for sample documents and analysis cases:
+- `examples/qixi-analysis/` - Historical commentaries, six-dimension analysis, and cross-school comparison for 《论语·公冶长·乞醯章》
 
 #### 📜 Featured Example: 《论语·乞醯章》深度分析
 
@@ -408,10 +408,8 @@ output:
 
 ### 示例
 
-查看 `examples/` 目录中的示例文档：
-- `sample_document.txt` - 基本文本示例
-- `sample_document2.txt` - 扩展示例
-- `quantum_paper1.txt` - 量子计算示例
+查看 `examples/` 目录中的示例文档和案例分析：
+- `examples/qixi-analysis/` - 包含《论语·公冶长·乞醯章》的历代注疏原文、六维解剖报告及诸子百家对比分析
 
 #### 📜 精选案例：《论语·乞醯章》深度分析
 
